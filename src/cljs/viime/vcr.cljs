@@ -1,15 +1,16 @@
 (ns viime.vcr
+  (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [goog.events :as events]
             [secretary.core :as secretary]
             [clojure.string :as string]
             [re-frame.core :as re-frame]
             [cljs-time.coerce :as trans]
             [cljs-time.core :as date]
+            [cljs.core.async :as async]
+            [cljs.core.async :refer [put! chan <! >! timeout close!]]
             [r]
             [rw]))
 
-
-(def ENTER_KEY 13)
 
 (def app-state (atom {:showing :all
                       :todos []
@@ -18,84 +19,63 @@
                       :recording false
                       :frame-time nil}))
 
-;;=====================
-;;media
-
 (defn- get-screen [] (.getElementById js/document "video"))
+(defn- get-replay [] (.getElementById js/document "playback"))
 
 (def video-canvas (.getElementById js/document "canvas"))
 
-(def video-context (.getContext video-canvas "2d"))
+(defn start-recording [stream]
+  (let [recorder (js/MediaRecorder. stream)
+        _ (println "starting")
+        _ (aset recorder "ondataavailable" #(re-frame/dispatch [:add-frame (.-data %)]))
+        _ (.start recorder)]
+    {}))
 
-(def supports-media  (or (fn? (.-getusermedia js/navigator ))
-                         (fn? (.-webkitgetusermedia js/navigator ))
-                         (fn? (.-mozgetusermedia js/navigator ))
-                         (fn? (.-msgetusermedia js/navigator ))))
+(defn stop-recording [stream]
+ (do (doseq [track (.getTracks stream)] (.stop track))
+     (re-frame/dispatch [:recording-stopped]) ))
 
-(def raf (some identity [(fn? (.-requestAnimationFrame js/window ))
-                         (fn? (.-webkitRequestAnimationFrame js/window ))
-                         (fn? (.-mozRequestAnimationFrame js/window ))
-                         (fn? (.-mozRequestAnimationFrame js/window ))
-                         (fn? (.-msRequestAnimationFrame js/window ))]))
+;(defn stop-recording [stream frames]
+;  (let [ _ (println "stopping")]
+;    (do (doseq [track (.getTracks stream)] (.stop track))
+;        (let [_ (close! frames)
+;                  _ (println "in go")
+;                  data (<! (async/reduce conj [] frames))
+;                  _ (println (str (count data) " reduced") )
+;                  blob (js/Blob. (clj->js data)  (clj->js { "type" "video/webm" }) )
+;                  _ (println (str "made a blob: " (.-type blob) " " (.-size blob)))
+;                  _ (println (str (count data) " frames.") )
+;                  ]
+;              (aset (get-replay) "src" (.createObjectURL js/URL blob) )) )
+;    ))
 
-(defn- request-animation-frame [record-frame] (raf record-frame))
-
-(defn- get-user-media [] (some identity (list (.-getUserMedia js/navigator)
-                                (.-webkitGetUserMedia js/navigator)
-                                (.-mozGetUserMedia js/navigator)
-                                (.-msGetUserMedia js/navigator) )))
-
-;(def window-url (.-URL js/window))
-
-(defn- complete-recording []
-        (.stop (@app-state :audio-recorder))
-        (swap! app-state assoc :recording false))
-
-(defn- record-frame []
-  (let [_ (set! (.-muted (get-screen)) true)
-        _ (aset (get-screen) "muted" true)
-        _ (println (str "muted: " (aget (get-screen) "muted")))]
-    (while (@app-state :recording)
-     (do ((.drawImage video-context (get-screen) 0 0 (.-width (get-screen)) (.-height (get-screen)))
-          (let [image-data (.getImageData video-context 0 0 (.-width (get-screen))(.-height (get-screen)))
-                frame-duration (- (trans/to-long (date/now)) (@app-state :frame-time))]
-            (swap! app-state assoc :image-array (conj (app-state :image-array)   {:image image-data :duration frame-duration})))
-            (swap! app-state assoc :frame-time (trans/to-long (date/now)) )))))
-  (complete-recording))
 
 (defn- success [stream]
-  (let [;audio-context (.-AudioContext js/window)
-        ;audioctx (audio-context.)
-        ;audio (.createMediaStreamSource audioctx stream)
-        ;gainctrl (.createGain audioctx)
-       ; gain (.-gain gainctrl)
-        ]
+  (let []
     (do (js/alert "success")
-        ;(.connect audio gainctrl)
-        ;(.connect gainctrl (.-destination audioctx))
-        ;(set! (-> gainctrl .-gain .-value) 0)
-        ;(println (str "VOL:" (aget gainctrl "gain" "value")))
-        (aset (get-screen) "src" (.createObjectURL (.-URL js/window) stream))
-        (set! (.-muted (get-screen)) true)
-        ;(swap! app-state assoc :audio-recorder (new js/Recorder audio #js {:workerPath "js/recorderWorker.js"}))
-        (swap! app-state assoc :mediaStrem stream)
-        (swap! app-state assoc :frame-time (trans/to-long (date/now)))
-        (aset video-canvas "width" (.-width (get-screen)))
-        (aset video-canvas "height" (.-height (get-screen)))
-        ;(.record (@app-state :audio-recorder))
-        (swap! app-state assoc :recording true))))
+      (aset (get-screen) "srcObject" stream #_(.createObjectURL (.-URL js/window) stream))
+      (aset (get-screen) "onplaying" #(start-recording stream))
+      (aset (get-screen) "onpause" #(stop-recording stream))
+
+; recording.src = URL.createObjectURL(recordedBlob);
+      (set! (.-muted (get-screen)) true))))
 
 (defn- error [err] (js/alert (str "error" err)))
 
 (defn- get-umedia []
   #(let [m (.getUserMedia (.-mediaDevices js/navigator) #js {:audio true :video true})
          _ (.then m success)
-         _ (.catch m error)]))
+         _ (.catch m error)]
+     {}))
 
 (defn player []
-  (fn []
-    [:div [:input {:type "button"
-                   :onClick (get-umedia)
-                   :value "Click me!"}]
-          [:video  {:autoPlay true :id "video"}]
-          [:canvas {:id "canvas"}]]))
+  (let [video (re-frame/subscribe [:video])]
+     [:div
+      [:div.row (str "size: " (.-size video) " type: " (.-type video))]
+      [:div.row [:video.col-md-4 {:controls true :id "video"}] ]
+      [:div.row [:input.btn.btn-primary.col-md-4
+                 {:type "button"
+                  :onClick (get-umedia)
+                  :value "Click me!"}]]
+      [:div.row [:video.col-md-4 {:src @video :controls true :id "playback"}
+                 ] ]]))
