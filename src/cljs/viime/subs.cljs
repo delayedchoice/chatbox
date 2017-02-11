@@ -12,11 +12,20 @@
  (fn [db]
    (:video db)))
 
+(re-frame/reg-sub
+ :state
+ (fn [db]
+   (:state db)))
 
 (re-frame/reg-sub
- :name
+ :messages
  (fn [db]
-   (:name db)))
+   (:messages db)))
+
+(re-frame/reg-sub
+ :boxes
+ (fn [db]
+   (:boxes db)))
 
 (re-frame/reg-sub
  :active-panel

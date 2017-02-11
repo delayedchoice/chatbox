@@ -1,16 +1,49 @@
-body {
-    padding-top: 70px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+a {
+  color: black;
 }
-
+body div.message:hover {
+  color: black;
+  font-weight: 100;
+  background-color: black !important;
+}
+.video {
+  float: left;
+}
+.inbox.col-md-10 {
+  padding: 0px 0px 0px 5px;
+}
+.list-group-item.message-field {
+  padding: 0px 2px 0px 5px;
+  border-style: none;
+}
+.list-group-item.header-field {
+  padding: 0px;
+}
+.unread {
+  font-family: "Lucida Console", Monaco, monospace;
+  color: gray;
+  font-weight: 900;
+  border-style: none;
+}
+.navbar {
+  margin-bottom: 0;
+  border-radius: 0;
+}
+/* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+.row.content {
+  height: 450px;
+}
+.sidenav {
+  padding-top: 20px;
+  background-color: #f1f1f1;
+  height: 100%;
+}
 .spacer {
-    margin-top: 50px;
+  margin-top: 50px;
 }
-
 .feature {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
-
 footer {
-    margin: 50px 0;
+  margin: 50px 0;
 }
-

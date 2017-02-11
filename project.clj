@@ -4,6 +4,7 @@
                  [reagent "0.6.0"]
                  [com.andrewmcveigh/cljs-time "0.4.0"]
                  [re-frame "0.9.1"]
+                 [com.lucasbradstreet/cljs-uuid-utils "1.0.2"]
                  [secretary "1.2.3"]
                  [ns-tracker "0.3.0"]
                  [compojure "1.5.0"]

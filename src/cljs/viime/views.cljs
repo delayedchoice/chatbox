@@ -5,16 +5,21 @@
             [re-frame.core :as re-frame]
             [cljs-time.coerce :as trans]
             [cljs-time.core :as date]
+            [viime.components :refer [inbox nav-bar side-bar]]
             [viime.vcr :refer [player]])
   (:import [goog History]
            [goog.history EventType]))
 
 
-;; home
+
+(def example
+  {:headers ["Row 1" "Row 2" "Row 3" "Row 4"]
+   :rows [["Entry1" "entry"]["Entry2"]["Entry3"]["Entry4"]]})
 
 (defn home-panel []
-  (let [name (re-frame/subscribe [:name])]
-      player))
+  (let []
+      [:title "ViiMe"]
+      [:div [nav-bar][side-bar][inbox] #_[player]]))
 
 
 ;; about

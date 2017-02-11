@@ -8,3 +8,6 @@ exit
 exit
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
