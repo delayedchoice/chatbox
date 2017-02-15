@@ -29,18 +29,33 @@ body div.message:hover {
   padding: 0px;
 }
 
+body div.message:hover {
+    //background-color:black !important;
+    color:black;
+    font-weight: 100;
+    background-color: black !important;
+}
+
 
 .unread {
   font-family: "Lucida Console", Monaco, monospace;
-  color:gray;
+  color:darkgray;
   font-weight: 900;
   border-style: none;
 }
 
-.navbar {
-      margin-bottom: 0;
-      border-radius: 0;
+.read {
+  font-family: "Lucida Console", Monaco, monospace;
+  color:lightgray;
+  font-weight: 100;
+  border-style: none;
 }
+
+
+//.navbar {
+//      margin-bottom: 0;
+//      border-radius: 0;
+//}
 
 /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
 .row.content {height: 450px}
@@ -48,6 +63,7 @@ body div.message:hover {
 .sidenav {
       //margin-right: 5px;
       padding-top: 20px;
+      padding-bottom: 20px;
       background-color: #f1f1f1;
       height: 100%;
 }

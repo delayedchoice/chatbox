@@ -13,9 +13,19 @@
    (:video db)))
 
 (re-frame/reg-sub
- :state
+  :stream
+  (fn [db]
+    (:stream db)))
+
+(re-frame/reg-sub
+  :state
+  (fn [db]
+    (get-in db [:state] )))
+
+(re-frame/reg-sub
+ :styles
  (fn [db]
-   (:state db)))
+   (:styles db)))
 
 (re-frame/reg-sub
  :messages
