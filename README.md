@@ -22,7 +22,10 @@ lein less auto
 
 ```
 lein clean
-lein figwheel dev
+lein repl
+--inside repl
+   (use 'figwheel-sidecar.repl-api)
+   (start-figwheel!)
 ```
 
 Figwheel will automatically push cljs changes to the browser.
