@@ -1,13 +1,30 @@
 a {
   color: black;
 }
-body div.message:hover {
-  color: black;
-  font-weight: 100;
-  background-color: black !important;
+video {
+  width: 80%;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  -ms-transform: translateX(-50%);
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+  min-width: 80%;
+  min-height: 80%;
 }
-.video {
+.control-label {
   float: left;
+}
+.video-container {
+  text-align: center;
+}
+.centered-button {
+  width: 30%;
+  left: 50%;
+  margin-top: 5px;
+  -ms-transform: translateX(-50%);
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
 }
 .inbox.col-md-10 {
   padding: 0px 0px 0px 5px;

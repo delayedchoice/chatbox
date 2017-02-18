@@ -42,29 +42,21 @@
      [:div.modal-body
       [:form.form-horizontal {:role "form"}
        [:div.form-group
-        [:label.col-lg-2.control-label "To"]
-        [:div.col-lg-10
+        [:label.col-md-2.control-label "To"]
+        [:div.col-md-10
          [:input {:type "text"
                   :placeholder ""
                   :id :to
                   :class "form-control"}]]]
 			 [:div.form-group
-        [:label.col-lg-2.control-label "Subject"]
-        [:div.col-lg-10
+        [:label.col-md-2.control-label "Subject"]
+        [:div.col-md-10
          [:input {:type "text"
                   :placeholder ""
                   :id :subject
                   :class "form-control"}]]]
        [:div.form-group
-        [:label.col-lg-2.control-label "Message"]
-        [:div.col-lg-10
-         [player]
-         #_[:textarea {:rows "10"
-                     :cols "30"
-                     :class "form-control"
-                     :id ""
-                     :name ""}]]]
-       [:a.btn.btn-primary.pull-right {:type "button"} "Submit"]]]]]])
+         [player] ]]]]]])
 
 (defn side-bar []
   (let [boxes (rf/subscribe [:boxes])]

@@ -13,7 +13,12 @@
             :unread "unread message"}
    :state start-state
    :boxes [{:id 12}]
-   :messages [{:from "Charlie@Viime.com"
+   :messages [{:from "Mallory@Viime.com"
+               :subject "Never"
+               :id 3
+               :status :unread
+               :timedate "TODAY" }
+              {:from "Charlie@Viime.com"
                :subject "OK"
                :id 2
                :status :unread

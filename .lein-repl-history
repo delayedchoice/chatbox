@@ -22,3 +22,13 @@ exit
 (ns viime.components)
 (modal)
 (player)
+exut
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
