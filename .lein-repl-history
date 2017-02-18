@@ -32,3 +32,5 @@ exit
 exit
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)

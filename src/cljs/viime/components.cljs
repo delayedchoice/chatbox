@@ -38,23 +38,21 @@
                 :data-dismiss "modal"
                 :class "close"
                 :type "button" }]
-      [:h4.modal-title "Compose"]]
+      [:h4.modal-title
+       [:div 
+        [:span.textbox
+         "To: "
+         [:input {:type "text" :name "url" :autoFocus true}]]
+        [:span.textbox
+         "Subject: "
+         [:input {:type "text" :name "url" }]]
+        [:span.textbox
+         "Tags: "
+         [:input {:type "text" :name "url" }]]]]]
      [:div.modal-body
-      [:form.form-horizontal {:role "form"}
-       [:div.form-group
-        [:label.col-md-2.control-label "To"]
-        [:div.col-md-10
-         [:input {:type "text"
-                  :placeholder ""
-                  :id :to
-                  :class "form-control"}]]]
-			 [:div.form-group
-        [:label.col-md-2.control-label "Subject"]
-        [:div.col-md-10
-         [:input {:type "text"
-                  :placeholder ""
-                  :id :subject
-                  :class "form-control"}]]]
+      [:form.form-horizontal{:role "form"}
+
+
        [:div.form-group
          [player] ]]]]]])
 
