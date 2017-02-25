@@ -6,9 +6,8 @@
 (defn upload [media filename]
   (let [form-data (doto
                     (js/FormData.)
-                    (.append "id" "10")
-                    (.append "file" media  filename))
-        _ (println media)]
+                    (.append "id" (str filename "webm"))
+                    (.append "file" media))]
   (POST "/msg" { :body form-data
                  :response-format (raw-response-format)
                  :timeout 10000

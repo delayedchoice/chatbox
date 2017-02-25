@@ -1,7 +1,8 @@
 (ns viime.events
     (:require [re-frame.core :as re-frame]
               [cljs-uuid-utils.core :as uuid]
-              [viime.db :as db]))
+              [viime.db :as db]
+              [viime.rest :as r]))
 
 (re-frame/reg-event-db
  :initialize-db
@@ -16,7 +17,10 @@
          stream (:stream db)]
      (do (doseq [track (.getTracks stream)] (.stop track))
          (re-frame/dispatch [:set-state :playing])
-         (assoc-in db [:video] (.createObjectURL js/URL blob))))))
+         (let [media (.createObjectURL js/URL blob) ]
+              ;TODO add account id or something.
+              (r/upload blob 'test')
+              (assoc-in db [:video] media))))))
 
 ;co-effect
 (re-frame/reg-event-db

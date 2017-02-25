@@ -1,36 +1,83 @@
 exit
+(use 'figwheel-sidecar-.repl-api)
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
-xit
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+*e
 exit
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
 exit
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
+(main-)
+(-main)
 exit
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
-(use 'figwheel-sidecar.repl-api)
-(start-figwheel!)
+(-main)
+exit
+(-main)
+(onelog.core/set-debug!)
+exit
+(-main)
+jkj:bd
+(current-trace-url)
+(liberator.dev/current-trace-url)
+exit
+(-main)
+(liberator.dev/current-trace-url)
+exit
+(-main)
+exit
+(-main)
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
 exit
-(use 'figwheel-sidecar.repl-api)
-(start-figwheel!)
-(ns 'viime.components)
-(ns viime.components)
-(modal)
-(player)
-exut
+(-main)
 exit
+(-main)
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
 exit
+(-main)
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
 exit
+(-main)
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
+exit
+(-main)
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
+exit
+(-main)
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+j(name :test0
+)
+(name :test)
+exit
+(use 'figwheel-sidecar.repl-api)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+*e
+(-main)
+exit
+(-main)
+kj
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+exit
+(-main)
+j
+(-main)
+exit
+(-main)
+exit
+(-main)
+exit

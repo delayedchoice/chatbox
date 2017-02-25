@@ -2,17 +2,22 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.229"]
                  [reagent "0.6.0"]
+								 [liberator "0.14.1"]
                  [com.andrewmcveigh/cljs-time "0.4.0"]
+                 [cljs-ajax "0.5.8"]
                  [re-frame "0.9.1"]
                  [com.lucasbradstreet/cljs-uuid-utils "1.0.2"]
                  [secretary "1.2.3"]
                  [ns-tracker "0.3.0"]
                  [compojure "1.5.0"]
+                 [ring.middleware.logger "0.5.0"]
                  [yogthos/config "0.8"]
                  [ring "1.4.0"]]
 
-  :plugins [[lein-cljsbuild "1.1.4"]
-            [lein-less "1.7.5"]]
+  :plugins [[lein-ring "0.11.0"]
+            [lein-cljsbuild "1.1.4"]
+            [lein-less "1.7.5"]
+            ]
 
   :min-lein-version "2.5.3"
 
@@ -22,7 +27,8 @@
                                     "test/js"]
 
   :figwheel {:css-dirs ["resources/public/css"]
-             :ring-handler viime.handler/dev-handler}
+             ;:ring-handler viime.handler/handler
+             }
 
   :less {:source-paths ["less"]
          :target-path  "resources/public/css"}
@@ -90,10 +96,12 @@
     ]}
   :main viime.server
 
+  :ring {:handler viime.handler/handler }
+
   :aot [viime.server]
 
   :uberjar-name "viime.jar"
 
-  :prep-tasks [["cljsbuild" "once" "min"] "compile"]
+  :prep-tasks [#_["cljsbuild" "once" "min"] "compile"]
 
   )
