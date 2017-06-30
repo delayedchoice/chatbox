@@ -14,10 +14,8 @@
                  [yogthos/config "0.8"]
                  [ring "1.4.0"]]
 
-  :plugins [[lein-ring "0.11.0"]
-            [lein-cljsbuild "1.1.4"]
-            [lein-less "1.7.5"]
-            ]
+  :plugins [[lein-cljsbuild "1.1.4"]
+            [lein-less "1.7.5"] ]
 
   :min-lein-version "2.5.3"
 
@@ -27,8 +25,7 @@
                                     "test/js"]
 
   :figwheel {:css-dirs ["resources/public/css"]
-             ;:ring-handler viime.handler/handler
-             }
+             :ring-handler viime.handler/dev-handler }
 
   :less {:source-paths ["less"]
          :target-path  "resources/public/css"}
@@ -95,8 +92,6 @@
                      :optimizations :none}}
     ]}
   :main viime.server
-
-  :ring {:handler viime.handler/handler }
 
   :aot [viime.server]
 

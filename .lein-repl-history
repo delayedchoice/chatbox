@@ -81,3 +81,13 @@ exit
 exit
 (-main)
 exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)

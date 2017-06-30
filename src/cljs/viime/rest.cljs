@@ -3,10 +3,10 @@
                       raw-response-format
                       POST]]))
 
-(defn upload [media filename]
+(defn upload [media id]
   (let [form-data (doto
                     (js/FormData.)
-                    (.append "id" (str filename "webm"))
+                    (.append "id" id)
                     (.append "file" media))]
   (POST "/msg" { :body form-data
                  :response-format (raw-response-format)

@@ -19,7 +19,7 @@
          (re-frame/dispatch [:set-state :playing])
          (let [media (.createObjectURL js/URL blob) ]
               ;TODO add account id or something.
-              (r/upload blob 'test')
+              (r/upload blob (uuid/make-random-uuid))
               (assoc-in db [:video] media))))))
 
 ;co-effect
