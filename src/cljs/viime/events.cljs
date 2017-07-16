@@ -2,7 +2,9 @@
     (:require [re-frame.core :as re-frame]
               [cljs-uuid-utils.core :as uuid]
               [viime.db :as db]
-              [viime.rest :as r]))
+              [viime.rest :as r]
+;              [peerjs]
+))
 
 (re-frame/reg-event-db
  :initialize-db
@@ -28,8 +30,36 @@
  (fn  [db _]
    (let [m (-> (.getUserMedia (.-mediaDevices js/navigator) #js {:audio true :video true})
                (.then  #(re-frame/dispatch [:set-stream %]) )
-               (.catch #(js/alert (str "error" %))))])
+               (.catch #(js/alert (str "error" %))))
+;         peer (js/Peer. {"key" "lwjd5qra8257b9"})
+;         _ (.on peer "open" #(re-frame/dispatch [:peer-open %]) )
+;         _ (.on peer "call" #(re-frame/dispatch [:peer-incoming-call %]) )
+]
+;		(assoc-in db [:peer] peer)
+)
   db))
+
+;(re-frame/reg-event-db
+; :peer-open
+; (fn [db [_ id]]
+;    (let [ _ (prn "PEERJS:OPEN:ID:" id)]
+;     (assoc db :peerjs-id id) )))
+;
+;(re-frame/reg-event-db
+; :peer-incoming-call
+; (fn [db [_ call]]
+;    (let [_ (prn "PEERJS:INCOMING:CALL" )
+;          _ (.on call "stream" #(re-frame/dispatch [:peer-remote-stream-connect %]))
+;          _ (.answer call (:stream db))]
+;     (assoc db :peer-call call) )))
+;
+;(re-frame/reg-event-db
+; :peer-remote-stream-connect
+; (fn [db [_ remote-stream]]
+;    (let [_ (prn "PEERJS:INCOMING:REMOTE-STREAM" )
+;           ]
+;     (assoc db :remote-stream remote-stream))))
+
 ;co-effect
 (re-frame/reg-event-db
  :start-recording

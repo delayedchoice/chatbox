@@ -100,9 +100,12 @@ exit
 exit
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
+<<<<<<< Updated upstream
 exit
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
 exit
+=======
+>>>>>>> Stashed changes
