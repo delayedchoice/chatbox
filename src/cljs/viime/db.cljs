@@ -13,18 +13,22 @@
             :unread "unread message"}
    :state start-state
    :boxes [{:id 12}]
-   :messages [{:from "Mallory@Viime.com"
-               :subject "Never"
+   :peerjs-id "UNCONNECTED"
+   :contacts [{:nm "Mallory@Viime.com"
+               ;:subject "Never"
                :id 3
                :status :unread
-               :timedate "TODAY" }
-              {:from "Charlie@Viime.com"
-               :subject "OK"
+               ;:timedate "TODAY"
+               }
+              {:nm "Charlie@Viime.com"
+               ;:subject "OK"
                :id 2
                :status :unread
-               :timedate "TODAY" }
-              {:from "Bobby@Viime.com"
-               :subject "WELCOME"
+               ;:timedate "TODAY"
+               }
+              {:nm "Bobby@Viime.com"
+               ;:subject "WELCOME"
                :id 1
                :status :read
-               :timedate "YESTERDAY" }] })
+               ;:timedate "YESTERDAY"
+               }] })

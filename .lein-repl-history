@@ -109,3 +109,17 @@ exit
 exit
 =======
 >>>>>>> Stashed changes
+(start-figwheel!)
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)

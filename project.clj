@@ -56,12 +56,9 @@
                                           :provides ["rw"]
                                           ;:module-type :commonjs
                                           }
-;                                          ,
-;                                          {:file "resources/public/js/peer.min.js"
-;                                          :provides ["peerjs"]
-;                                          ;:module-type :commonjs
-;                                          }
-]
+                                          ,
+                                          {:file "resources/public/js/peer.min.js"
+                                          :provides ["peerjs"]}]
                     :output-to            "resources/public/js/compiled/app.js"
                     :output-dir           "resources/public/js/compiled/out"
                     :asset-path           "js/compiled/out"

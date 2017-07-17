@@ -3,8 +3,7 @@
               [cljs-uuid-utils.core :as uuid]
               [viime.db :as db]
               [viime.rest :as r]
-;              [peerjs]
-))
+              [peerjs]))
 
 (re-frame/reg-event-db
  :initialize-db
@@ -31,34 +30,48 @@
    (let [m (-> (.getUserMedia (.-mediaDevices js/navigator) #js {:audio true :video true})
                (.then  #(re-frame/dispatch [:set-stream %]) )
                (.catch #(js/alert (str "error" %))))
-;         peer (js/Peer. {"key" "lwjd5qra8257b9"})
-;         _ (.on peer "open" #(re-frame/dispatch [:peer-open %]) )
-;         _ (.on peer "call" #(re-frame/dispatch [:peer-incoming-call %]) )
-]
-;		(assoc-in db [:peer] peer)
-)
-  db))
+         peer (js/Peer. #js {"key" "lwjd5qra8257b9"})
+         _ (.on peer "open" #(re-frame/dispatch [:peer-open %]) )
+         _ (.on peer "call" #(re-frame/dispatch [:peer-incoming-call %]) ) ]
+		(assoc-in db [:peer] peer))))
 
-;(re-frame/reg-event-db
-; :peer-open
-; (fn [db [_ id]]
-;    (let [ _ (prn "PEERJS:OPEN:ID:" id)]
-;     (assoc db :peerjs-id id) )))
-;
-;(re-frame/reg-event-db
-; :peer-incoming-call
-; (fn [db [_ call]]
-;    (let [_ (prn "PEERJS:INCOMING:CALL" )
-;          _ (.on call "stream" #(re-frame/dispatch [:peer-remote-stream-connect %]))
-;          _ (.answer call (:stream db))]
-;     (assoc db :peer-call call) )))
-;
-;(re-frame/reg-event-db
-; :peer-remote-stream-connect
-; (fn [db [_ remote-stream]]
-;    (let [_ (prn "PEERJS:INCOMING:REMOTE-STREAM" )
-;           ]
-;     (assoc db :remote-stream remote-stream))))
+(re-frame/reg-event-db
+ :peer-open
+ (fn [db [_ id]]
+    (let [_ (prn "PEERJS:OPEN:ID:" id)]
+     (assoc db :peerjs-id id))))
+
+(re-frame/reg-event-db
+ :peer-incoming-call
+ (fn [db [_ call]]
+    (let [_ (prn "PEERJS:INCOMING:CALL" )
+          _ (.on call "stream" #(re-frame/dispatch [:peer-remote-stream-connect %]))
+          _ (.answer call (:stream db))]
+     (assoc db :peer-call call) )))
+
+(re-frame/reg-event-db
+ :initiate-call
+ (fn [db [_ remote-peer-id]]
+    (let [_ (prn "PEERJS:PLACING:CALL " )
+          peer (:peer db)
+          _ (prn "PEERJS:PLACING:CALL 1" )
+          stream (:stream db)
+          _ (prn "PEERJS:PLACING:CALL 2" )
+          call (.call peer remote-peer-id stream )
+          _ (prn "PEERJS:PLACING:CALL 3" )
+          _ (.on call "stream" #(let [ _ (prn "STREAM:IS:" %)] (re-frame/dispatch [:peer-remote-stream-connect %])))
+          _ (prn "PEERJS:PLACING:CALL 4" )
+
+          ]
+     (assoc db :peer-call call) )))
+
+(re-frame/reg-event-db
+ :peer-remote-stream-connect
+ (fn [db [_ remote-stream]]
+    (let [_ (prn "PEERJS:INCOMING:REMOTE-STREAM" )
+          screen (.getElementById js/document "video") ]
+      (-> (assoc-in db [:video] (.createObjectURL js/URL remote-stream))
+          (assoc :remote-stream remote-stream)))))
 
 ;co-effect
 (re-frame/reg-event-db
@@ -87,9 +100,7 @@
 (re-frame/reg-event-db
  :set-stream
  (fn [db [_ stream]]
-   (let [screen (.getElementById js/document "video")
-         _ (aset screen "srcObject" stream)
-         _ (set! (.-muted screen) true)]
+   (let [screen (.getElementById js/document "video") ]
     (assoc db :stream stream))))
 
 

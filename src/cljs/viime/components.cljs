@@ -39,7 +39,7 @@
                 :class "close"
                 :type "button" }]
       [:h4.modal-title
-       [:div 
+       [:div
         [:span.textbox
          "To: "
          [:input {:type "text" :name "url" :autoFocus true}]]
@@ -67,21 +67,22 @@
         [:div
          [:p [:a {:href "#"} "Link"]]])]]))
 
-(defn message [{:keys [from subject timedate status style]} styles]
+(defn contact [{:keys [nm timedate status style]} styles]
   [:div {:class (styles status)}
-   [:div.col-md-4.list-group-item.message-field from]
-   [:div.col-md-6.list-group-item.message-field subject]
-   [:div.col-md-2.list-group-item.message-field timedate]])
+   [:div.col-md-12.list-group-item.message-field nm]
+   ;[:div.col-md-6.list-group-item.message-field status]
+   ;[:div.col-md-2.list-group-item.message-field timedate]
+   ])
 
 (defn inbox []
-  (let [messages (rf/subscribe [:messages])
+  (let [contacts (rf/subscribe [:contacts])
         styles   (rf/subscribe [:styles ])]
-    [:div.list-group.col-md-10.inbox
+    [:div.list-group.col-md-12.inbox
      [:div
-      [:div.col-md-4.text-center.list-group-item.header-field [:label "From"]]
-      [:div.col-md-6.text-center.list-group-item.header-field [:label "Subject"]]
-      [:div.col-md-2.text-center.list-group-item.header-field [:label "Date"]]]
+      [:div.col-md-12.text-center.list-group-item.header-field [:label "Contact"]]
+     ; [:div.col-md-2.text-center.list-group-item.header-field [:label "Status"]]
+      ]
      (doall
-       (for [msg @messages]
-        ^{:key (:id msg)}
-        [message msg @styles]))]))
+       (for [cntct @contacts]
+        ^{:key (:id cntct)}
+        [contact cntct @styles]))]))

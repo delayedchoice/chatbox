@@ -8,6 +8,11 @@
    (:frames db)))
 
 (re-frame/reg-sub
+ :peerjs-id
+ (fn [db]
+   (:peerjs-id db)))
+
+(re-frame/reg-sub
  :video
  (fn [db]
    (:video db)))
@@ -28,9 +33,9 @@
    (:styles db)))
 
 (re-frame/reg-sub
- :messages
+ :contacts
  (fn [db]
-   (:messages db)))
+   (:contacts db)))
 
 (re-frame/reg-sub
  :boxes
