@@ -11,29 +11,34 @@
   (:import [goog History]
            [goog.history EventType]))
 
-(defn contact-button []
-  (let [remote-peer (reagent/atom "test")]
+(defn call-button []
+  (let [remote-peer (reagent/atom "")]
     (fn []
       [:div
-      [:a.btn.btn-primary.col-md-4
-       {:type "button"
-        :on-click #(rf/dispatch [:initiate-call @remote-peer])} "Call"]
-      [:input.col-md-4 {:type "text"
-                        :on-change #(reset! remote-peer (-> % .-target .-value))
-                        :value @remote-peer
-                        :name "remote-peer-id"}]])))
+        [:a.btn.btn-primary.col-md-4
+         {:type "button"
+          :on-click #(rf/dispatch [:initiate-call @remote-peer])}
+         "Call"]
+        [:input.col-md-4 {:type "text"
+                          :on-change #(reset! remote-peer (-> % .-target .-value))
+                          :value @remote-peer
+                          :name "remote-peer-id"}]])))
 
 (defn player []
   (fn []
     (let [video (rf/subscribe [:video])]
      [:div.video-container
-       [:video.col-md-8 {:src @video :controls true :autoPlay true :id "video"}]])))
+       [:video.col-md-8 {:src @video :controls false :autoPlay true :id "video"}]])))
 
 
 (defn home-panel []
   (let [pid (rf/subscribe [:peerjs-id])]
       [:title "ViiMe"]
-      [:div [nav-bar] [modal] [:div [:label (str "PID:" @pid)]] [contact-button] [inbox] [player]]))
+      [:div [nav-bar]
+            [:div [:label (str "PID:" @pid)]]
+            [call-button]
+            [inbox]
+            [player]]))
 
 (defn main-panel []
   (fn []

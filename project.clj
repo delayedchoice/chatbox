@@ -9,12 +9,22 @@
                  [com.lucasbradstreet/cljs-uuid-utils "1.0.2"]
                  [secretary "1.2.3"]
                  [ns-tracker "0.3.0"]
-                 [compojure "1.5.0"]
+                 [compojure "1.5.1"]
                  [ring.middleware.logger "0.5.0"]
                  [yogthos/config "0.8"]
-                 [ring "1.4.0"]]
+                 [ring "1.5.0"]
+
+                ;sente
+                [org.clojure/core.async    "0.2.395"]
+                [org.clojure/tools.nrepl   "0.2.12"] ; Optional, for Cider
+                [com.taoensso/sente        "1.11.0"] ; <--- Sente
+                [com.taoensso/timbre       "4.7.4"]
+                [http-kit                             "2.2.0"]
+                [ring/ring-defaults        "0.2.1"]
+                ]
 
   :plugins [[lein-cljsbuild "1.1.4"]
+            [lein-ancient        "0.6.10"]
             [lein-less "1.7.5"] ]
 
   :min-lein-version "2.5.3"

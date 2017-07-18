@@ -123,3 +123,16 @@ exit
 (start-figwheel!)
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
+exit
+(start-figwheel!)
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
