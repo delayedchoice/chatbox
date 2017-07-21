@@ -136,3 +136,100 @@ exit
 exit
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+/login
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+exit
+(doc reset!)
+(doc reset(
+(doc reset)
+(reset)
+exit
+(reset)
+(viime/dev.reset)
+(viime.dev/reset)
+exit
+*e
+(user/reset)
+*e
+(user/go)
+(user/init)
+(system/system)
+(viime.system/system)
+*e
+(user/reset)
+*e
+*1
+(use 'clojure.stacktrace)
+exit
+(user/reset)
+*e
+*1
+(user/reset)
+exit
+(user/reset)
+exit
+(user/reset)
+exit
+(user/reset)
+exit
+(user/reset)
+ExceptionInfo Invariant violation in `taoensso.sente:?`. Test form: `((fn* [p1__9746#] (satisfies? interfaces/IServerChanAdapter p1__9746#)) web-server-ch-adapter)` with failing input: `taoensso.sente.server_adapters.http_kit.HttpKitServerChanAdapter@6efbc082`
+`pred-form` error: java.lang.NullPointerException  clojure.core/ex-info (core.clj:4617)
+ExceptionInfo Invariant violation in `taoensso.sente:?`. Test form: `((fn* [p1__9746#] (satisfies? interfaces/IServerChanAdapter p1__9746#)) web-server-ch-adapter)` with failing input: `taoensso.sente.server_adapters.http_kit.HttpKitServerChanAdapter@6efbc082`
+`pred-form` error: java.lang.NullPointerException  clojure.core/ex-info (core.clj:4617)
+(user/reset)
+ExceptionInfo Invariant violation in `taoensso.sente:?`. Test form: `((fn* [p1__9746#] (satisfies? interfaces/IServerChanAdapter p1__9746#)) web-server-ch-adapter)` with failing input: `taoensso.sente.server_adapters.http_kit.HttpKitServerChanAdapter@6efbc082`
+`pred-form` error: java.lang.NullPointerException  clojure.core/ex-info (core.clj:4617)
+ExceptionInfo Invariant violation in `taoensso.sente:?`. Test form: `((fn* [p1__9746#] (satisfies? interfaces/IServerChanAdapter p1__9746#)) web-server-ch-adapter)` with failing input: `taoensso.sente.server_adapters.http_kit.HttpKitServerChanAdapter@6efbc082`
+`pred-form` error: java.lang.NullPointerException  clojure.core/ex-info (core.clj:4617)
+jExceptionInfo Invariant violation in `taoensso.sente:?`. Test form: `((fn* [p1__9746#] (satisfies? interfaces/IServerChanAdapter p1__9746#)) web-server-ch-adapter)` with failing input: `taoensso.sente.server_adapters.http_kit.HttpKitServerChanAdapter@6efbc082`kj
+exit
+(user/reset)
+exit
+(user/reset)
+exit
+(user/reset)
+exit
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+(user/stop)
+(user/go)
+exit
+(user/go)
+k
+(user/stop)
+(user/go)
+(user/stop)
+(user/go)
+exit
+(user/go)
+(user/stop)
+(user/go)
+(user/stop)
+(user/go)
+(user/stop)
+(user/go)
+(user/stop)
+(user/go)
+(user/stop)
+exit
+(user/go)
+(user/stop)
+(user/go)
+(user/stop)
+exit
+(user/go)
+(user/stop)
+(user/go)
+exit
+(user/go)
+(user/stop)
+(user/go)
+(user/stop)

@@ -13,6 +13,7 @@
                  [ring.middleware.logger "0.5.0"]
                  [yogthos/config "0.8"]
                  [ring "1.5.0"]
+                 [org.clojure/core.cache "0.6.4"]
 
                 ;sente
                 [org.clojure/core.async    "0.2.395"]
@@ -21,6 +22,10 @@
                 [com.taoensso/timbre       "4.7.4"]
                 [http-kit                             "2.2.0"]
                 [ring/ring-defaults        "0.2.1"]
+                [korma "0.4.1"]
+                [com.h2database/h2 "1.3.170"]
+                [overtone/at-at "1.2.0"]
+                [com.stuartsierra/component "0.3.2"]
                 ]
 
   :plugins [[lein-cljsbuild "1.1.4"]
@@ -29,7 +34,7 @@
 
   :min-lein-version "2.5.3"
 
-  :source-paths ["src/clj"]
+  :source-paths ["src/clj" "test/clj"]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"
                                     "test/js"]
@@ -44,12 +49,15 @@
   {:dev
    {:dependencies [[binaryage/devtools "0.8.2"]
                    [com.cemerick/piggieback "0.2.1"]
-                   [figwheel-sidecar "0.5.8"] ]
+                   [figwheel-sidecar "0.5.8"]
+                   [org.clojure/tools.namespace "0.2.11"]
+;                   [com.stuartsierra/component.repl "0.2.0"]
+                   ]
     :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
     :plugins      [[cider/cider-nrepl "0.12.0"]
                    [lein-figwheel "0.5.8"]
                    [lein-doo "0.1.7"]]
-    :source-paths ["src/cljs"]
+    :source-paths ["src/cljs" "dev"]
     }}
 
   :cljsbuild
