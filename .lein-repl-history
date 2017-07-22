@@ -233,3 +233,180 @@ exit
 (user/stop)
 (user/go)
 (user/stop)
+exit
+(user/go)
+(user/stop)
+(user/go)
+(user/stop)
+exit
+(user/go)
+(user/stop)
+lbdb
+(user/go)
+(user/stop)
+exit
+(user/go)
+(user/stop)
+(user/go)
+(user/stop)
+exit
+(user/go)
+(user/stop)
+(user/go)
+exit
+(user/go)
+(user/stop)
+(user/go)
+kj
+(user/stop)
+(user/go)
+(user/stop)
+(user/go)
+(user/stop)
+(user/go)
+(user/stop)
+(user/go)
+(user/stop)
+(user/go)
+(user/stop)
+(user/go)
+exit
+(user/go)
+(user/stop)
+(user/go)
+(user/stop)
+(user/go)
+exit
+(user/go)
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+(stop-figwheel!)
+(start-figwheel!)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+(user/go)
+jj
+exit
+(user/go)
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+(user/stop)
+(user/go)
+(user/stop)
+(user/go)
+(user/stop)
+(user/go)
+(user/stop)
+(user/go)
+(user/stop)
+(user/go)
+(user/stop)
+(user/go)
+(user/stop)
+(user/go)
+exit
+(user/go)
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+(user/go)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+(user/go)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+:w
+(user/go)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+(user/go)
+(user/stop)
+(user/go)
+(user/stop)
+(user/go)
+(user/stop)
+(user/go)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+(user/go)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+(user/start)
+xit
+(user/stop)
+(user/start)
+(user/go)
+kexit
+exit
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+(user/go)
+(user/stop)
+(user/go)
+exit
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+(user/go)
+exit
+(user/go)
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)

@@ -67,22 +67,22 @@
         [:div
          [:p [:a {:href "#"} "Link"]]])]]))
 
-(defn contact [{:keys [nm timedate status style]} styles]
-  [:div {:class (styles status)}
-   [:div.col-md-12.list-group-item.message-field nm]
-   ;[:div.col-md-6.list-group-item.message-field status]
+(defn user-view [{:keys [whole-name status]} styles]
+  [  :div {:class (styles status)}
+   [:div.col-md-6.list-group-item.message-field whole-name]
+   [:div.col-md-2.list-group-item.message-field status]
    ;[:div.col-md-2.list-group-item.message-field timedate]
    ])
 
 (defn inbox []
-  (let [contacts (rf/subscribe [:contacts])
-        styles   (rf/subscribe [:styles ])]
+  (let [users (rf/subscribe [:users])
+        styles  (rf/subscribe [:styles ])]
     [:div.list-group.col-md-12.inbox
      [:div
-      [:div.col-md-12.text-center.list-group-item.header-field [:label "Contact"]]
-     ; [:div.col-md-2.text-center.list-group-item.header-field [:label "Status"]]
+      [:div.col-md-6.text-center.list-group-item.header-field [:label "Contact"]]
+      [:div.col-md-2.text-center.list-group-item.header-field [:label "Status"]]
       ]
      (doall
-       (for [cntct @contacts]
-        ^{:key (:id cntct)}
-        [contact cntct @styles]))]))
+       (for [user @users]
+        ^{:key (:id user)}
+        [user-view user @styles]))]))

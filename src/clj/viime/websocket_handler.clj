@@ -13,7 +13,7 @@
    [taoensso.sente.server-adapters.http-kit :refer (get-sch-adapter)]))
 
 ;; (timbre/set-level! :trace) ; Uncomment for more logging
-(reset! sente/debug-mode?_ true) ; Uncomment for extra debug info
+;(reset! sente/debug-mode?_ true) ; Uncomment for extra debug info
 
 (defn landing-pg-handler [ring-req]
   (hiccup/html
@@ -55,16 +55,25 @@
   (let [{:keys [session params]} ring-req
         {:keys [user-id]} params]
     (debugf "Login request: %s" params)
-    {:status 200 :session (assoc session :uid user-id)}))
+    (debugf "Session: %s" session)
+    {:status 200 :session (assoc session :uid user-id) #_:headers #_{"Access-Control-Allow-Origin" "*" }}))
+
+(defn login-options-handler
+  [ring-req]
+    {:status 200 :headers {"Access-Control-Allow-Headers"  "x-requested-with, x-csrf-token" "Access-Control-Allow-Origin" "*" "Allow" "OPTIONS, GET, HEAD, POST"} })
+
+(defn test-handler [x] "TEST NEW HANDLER SUCCESS")
 
 (defn create-ring-routes! [{:keys [ajax-post-fn ajax-get-or-ws-handshake-fn]}]
-  (let [ws-routes [{:method :get  :src "/"   :handler landing-pg-handler}
-                	 {:method :get  :src "/chsk"  :handler ajax-get-or-ws-handshake-fn}
-                	 {:method :get  :src "/chsk"  :handler ajax-post-fn}
-                	 {:method :get  :src "/login" :handler login-handler}]
+  (let [ws-routes [{:method :get  :src "/landing"       :handler landing-pg-handler}
+                	 {:method :get  :src "/chsk"   :handler ajax-get-or-ws-handshake-fn}
+                	 {:method :post :src "/chsk"   :handler ajax-post-fn}
+                   {:method :get :src "/test" :handler test-handler}
+                   #_{:method :options  :src "/login" :handler login-options-handler}
+                   {:method :post  :src "/login" :handler login-handler}]
       ring-routes (apply routes
          						(map #(make-route (:method %) (:src %) (:handler %)) ws-routes))]
-  ring-routes))
+  (ring.middleware.defaults/wrap-defaults ring-routes ring.middleware.defaults/site-defaults)))
 
 
 (defmulti -event-msg-handler
@@ -88,6 +97,14 @@
     (when ?reply-fn
       (?reply-fn {:umatched-event-as-echoed-from-from-server event}))))
 
+(defmethod -event-msg-handler
+  :viime/login
+  [{:as ev-msg :keys [event id ?data ring-req ?reply-fn send-fn]}]
+  (let [session (:session ring-req)
+        uid     (:uid     session)]
+    (debugf "Login event1: %s %s" event session)
+    (assoc session :uid (second event))))
+
 (defn  stop-router! [router] (when-let [stop-fn router] (stop-fn)))
 (defn start-router [{:keys [ch-recv]}]
   (sente/start-server-chsk-router!  ch-recv event-msg-handler))
@@ -102,18 +119,11 @@
 
 (defn stop-web-server! [webserver] (when-let [stop-fn webserver] (stop-fn)))
 (defn start-web-server! [ws port]
-  (let [port (or port 0) ; 0 => Choose any available port
+  (let [port (or port 0)
         ring-routes (create-ring-routes! ws)
-        ;_ (def ring-routes ring-routes-created)
         _ (prn "STARTING WEB SERVER")
-;        to-be-var (ring.middleware.defaults/wrap-defaults
-;                   ring-routes
-;                   ring.middleware.defaults/site-defaults)
-;        ring-handler (ring.middleware.defaults/wrap-defaults
-;                      ring-routes
-;                      ring.middleware.defaults/site-defaults)
-        ring-handler (main-ring-handler ring-routes)
-        stop-fn (http-kit/run-server ring-handler {:port port})
+        ;ring-handler (main-ring-handler ring-routes)
+        stop-fn (http-kit/run-server ring-routes {:port port})
         port    (:local-port (meta stop-fn))
         stop-fn (fn [] (let [_ (prn "STOPPING WEB SERVER")] (stop-fn)))
         uri (format "http://localhost:%s/" port)]

@@ -1,6 +1,4 @@
 (ns viime.websocket-client
-  "Official Sente reference example: client"
-  {:author "Peter Taoussanis (@ptaoussanis)"}
 
   (:require
    [clojure.string  :as str]
@@ -8,60 +6,26 @@
    [taoensso.encore :as encore :refer-macros (have have?)]
    [taoensso.timbre :as timbre :refer-macros (tracef debugf infof warnf errorf)]
    [taoensso.sente  :as sente  :refer (cb-success?)]
+   [re-frame.core :as rf] )
 
-   ;; Optional, for Transit encoding:
-   ;[taoensso.sente.packers.transit :as sente-transit]
-)
 
   (:require-macros
    [cljs.core.async.macros :as asyncm :refer (go go-loop)]))
 
-;; (timbre/set-level! :trace) ; Uncomment for more logging
 
-;;;; Util for logging output to on-screen console
-
-(def output-el (.getElementById js/document "output"))
 (defn ->output! [fmt & args]
   (let [msg (apply encore/format fmt args)]
-    (timbre/debug msg)
-    (aset output-el "value" (str "• " (.-value output-el) "\n" msg))
-    (aset output-el "scrollTop" (.-scrollHeight output-el))))
+    (timbre/debug msg)))
 
 (->output! "ClojureScript appears to have loaded correctly.")
 
-;;;; Define our Sente channel socket (chsk) client
+(def ws-connection  (sente/make-channel-socket-client!  "/chsk" #_{:host "localhost:3450"}))
+(def chsk       (ws-connection :chsk))
+(def ch-chsk    (ws-connection :ch-recv)) ; ChannelSocket's receive channel
+(def chsk-send! (ws-connection :send-fn)) ; ChannelSocket's send API fn
+(def chsk-state (ws-connection :state))   ; Watchable, read-only atom
 
-(let [;; For this example, select a random protocol:
-      rand-chsk-type (if (>= (rand) 0.5) :ajax :auto)
-      _ (->output! "Randomly selected chsk type: %s" rand-chsk-type)
-
-      ;; Serializtion format, must use same val for client + server:
-      packer :edn ; Default packer, a good choice in most cases
-      ;; (sente-transit/get-transit-packer) ; Needs Transit dep
-
-      {:keys [chsk ch-recv send-fn state]}
-      (sente/make-channel-socket-client!
-        "/chsk" ; Must match server Ring routing URL
-        {:type   rand-chsk-type
-         :packer packer})]
-
-  (def chsk       chsk)
-  (def ch-chsk    ch-recv) ; ChannelSocket's receive channel
-  (def chsk-send! send-fn) ; ChannelSocket's send API fn
-  (def chsk-state state)   ; Watchable, read-only atom
-  )
-
-;;;; Sente event handlers
-
-(defmulti -event-msg-handler
-  "Multimethod to handle Sente `event-msg`s"
-  :id ; Dispatch on event-id
-  )
-
-(defn event-msg-handler
-  "Wraps `-event-msg-handler` with logging, error catching, etc."
-  [{:as ev-msg :keys [id ?data event]}]
-  (-event-msg-handler ev-msg))
+(defmulti -event-msg-handler :id)
 
 (defmethod -event-msg-handler
   :default ; Default/fallback case (no other matching handler)
@@ -84,20 +48,42 @@
   (let [[?uid ?csrf-token ?handshake-data] ?data]
     (->output! "Handshake: %s" ?data)))
 
-;; TODO Add your (defmethod -event-msg-handler <event-id> [ev-msg] <body>)s here...
-
-;;;; Sente event router (our `event-msg-handler` loop)
+(defn event-msg-handler
+  "Wraps `-event-msg-handler` with logging, error catching, etc."
+  [{:as ev-msg :keys [id ?data event]}]
+  (-event-msg-handler ev-msg))
 
 (defonce router_ (atom nil))
 (defn  stop-router! [] (when-let [stop-f @router_] (stop-f)))
-(defn start-router! []
+(defn start-router! [ws-connection]
   (stop-router!)
   (reset! router_
     (sente/start-client-chsk-router!
-      ch-chsk event-msg-handler)))
+      (ws-connection :ch-recv) event-msg-handler)))
 
-;;;; UI events
-;(prn "WEBSOCKETCLIENT:LOOADED")
+(defn login [user-id ws-connection]
+  (let [_ (prn "CHANNEL STATE: " @(ws-connection :state))] (if (str/blank? user-id)
+     (js/alert "Please enter a user-id first")
+     (do
+       (->output! "Logging in with user-id %s" user-id)
+       ;     (chsk-send! [:viime/login user-id])
+       (sente/ajax-lite "/login" #_"http://localhost:3450/login"
+                        {:method :post
+                         :headers {:X-CSRF-Token (:csrf-token @(ws-connection :state)) #_"X-Requested-With" #_"XMLHttpRequest"}
+                         :params  {:user-id (str user-id)}}
+
+                        (fn [ajax-resp]
+                          (->output! "Ajax login response: %s" ajax-resp)
+                          (let [login-successful? true ; Your logic here
+                                ]
+                            (if-not login-successful?
+                              (->output! "Login failed")
+                              (do
+                                (->output! "Login successful")
+                                (sente/chsk-reconnect! (ws-connection :chsk)))))))
+
+       ))))
+
 (when-let [target-el (.getElementById js/document "btn1")]
   (.addEventListener target-el "click"
     (fn [ev]
@@ -140,38 +126,8 @@
                      (fn [ev]
                        (->output! "Reconnecting")
                        (sente/chsk-reconnect! chsk))))
-
-(when-let [target-el (.getElementById js/document "btn-login")]
-  (.addEventListener target-el "click"
-    (fn [ev]
-      (let [user-id (.-value (.getElementById js/document "input-login"))]
-        (if (str/blank? user-id)
-          (js/alert "Please enter a user-id first")
-          (do
-            (->output! "Logging in with user-id %s" user-id)
-
-            ;;; Use any login procedure you'd like. Here we'll trigger an Ajax
-            ;;; POST request that resets our server-side session. Then we ask
-            ;;; our channel socket to reconnect, thereby picking up the new
-            ;;; session.
-
-            (sente/ajax-lite "/login"
-              {:method :post
-               :headers {:X-CSRF-Token (:csrf-token @chsk-state)}
-               :params  {:user-id (str user-id)}}
-
-              (fn [ajax-resp]
-                (->output! "Ajax login response: %s" ajax-resp)
-                (let [login-successful? true ; Your logic here
-                      ]
-                  (if-not login-successful?
-                    (->output! "Login failed")
-                    (do
-                      (->output! "Login successful")
-                      (sente/chsk-reconnect! chsk))))))))))))
-
 ;;;; Init stuff
 
-(defn start! [] (start-router!))
+(defn start! [ws-connection] (start-router! ws-connection))
 
-(defonce _start-once (start!))
+;(defonce _start-once (start! ))

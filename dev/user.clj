@@ -17,7 +17,8 @@
       [clojure.pprint :refer (pprint)]
       [clojure.repl :refer :all]
       [clojure.test :as test]
-;      [clojure.tools.namespace.repl :refer (refresh)]
+      [figwheel-sidecar.repl-api :as figwheel]
+      [clojure.tools.namespace.repl :refer (refresh)]
          ))
 
 (def system nil)
@@ -30,11 +31,13 @@
 (defn start
   "Starts the current development system."
   []
+;  (figwheel/start-figwheel!)
   (alter-var-root #'system system/start))
 
 (defn stop
   "Shuts down and destroys the current development system."
   []
+;  (figwheel/stop-figwheel!)
   (alter-var-root #'system
     (fn [s] (when s (system/stop s)))))
 
@@ -44,6 +47,6 @@
   (init)
   (start))
 
-;(defn reset []
-;    (stop)
-;      (refresh :after 'user/go))
+(defn reset []
+    (stop)
+    (refresh :after 'user/go))

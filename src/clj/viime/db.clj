@@ -1,21 +1,16 @@
 (ns viime.db
-      (:require [korma.db :refer :all]
-                [korma.core :refer :all]
+      (:require [korma.db :refer [h2 with-db create-db]]
+                [korma.core :refer [defentity values insert entity-fields has-many exec-raw select]]
                 [clojure.string :as str]
-                [clojure.java.jdbc :as j])
-      )
+                [clojure.java.jdbc :as j]))
 
 (def in-mem-data-store
   (h2 {:db "mem:db"
        :user "sa"
-       :password ""
-        }))
+       :password "" }))
 
 (defn new-db [desc]
   (create-db desc))
-
-
-
 
 (defentity prompt_instance  (entity-fields :id :location))
 (defentity prompt (has-many prompt_instance) (entity-fields :id :text :level ))
@@ -67,7 +62,6 @@
     (insert prompt_instance (values {:prompt_id prompt-id :location location})) ))
 
 (defn close-db [db]
-  (with-db db
-;    (drop-tables db)
-    (exec-raw "SHUTDOWN")
-    ))
+  ;with-db db
+    (try (exec-raw db "SHUTDOWN")
+         (catch Throwable e (str "caught exception: " (.getMessage e)))))

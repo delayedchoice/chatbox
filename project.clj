@@ -13,6 +13,7 @@
                  [ring.middleware.logger "0.5.0"]
                  [yogthos/config "0.8"]
                  [ring "1.5.0"]
+                 [ring/ring-anti-forgery "1.1.0"]
                  [org.clojure/core.cache "0.6.4"]
 
                 ;sente

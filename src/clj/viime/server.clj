@@ -1,5 +1,5 @@
 (ns viime.server
-  (:require [viime.handler :refer [handler]]
+  (:require [viime.handler :refer [dev-handler]]
       ;      [viime.websocket-handler :refer [start!]]
             [config.core :refer [env]]
             [ring.middleware.logger :as logger]
@@ -8,5 +8,5 @@
 
  (defn -main [& args]
    (let [port (Integer/parseInt (or (env :port) "3000"))]
-     (run-jetty (logger/wrap-with-logger handler) {:port port :join? false})
+     (run-jetty (logger/wrap-with-logger dev-handler) {:port port :join? false})
      ))

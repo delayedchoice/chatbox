@@ -3,12 +3,29 @@
               [cljs-uuid-utils.core :as uuid]
               [viime.db :as db]
               [viime.rest :as r]
+              [viime.websocket-client :as ws]
+              [taoensso.sente  :as sente]
               [peerjs]))
 
 (re-frame/reg-event-db
  :initialize-db
  (fn  [_ _]
    db/default-db))
+
+(re-frame/reg-event-db
+ :login
+ (fn  [db [_ id]]
+   (ws/login id (db :websocket-server))
+   db))
+
+(re-frame/reg-event-db
+ :initialize-sente
+ (fn  [db [_ id]]
+   (let [websocket-server (sente/make-channel-socket-client!  "/chsk" {:host "localhost:3000"})
+        ; _ (prn "WEBSOCKEt_SERVER: " websocket-server)
+         ]
+     (ws/start! websocket-server)
+     (assoc-in db [:websocket-server] websocket-server))))
 
 (re-frame/reg-event-db
  :stop-recording

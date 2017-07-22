@@ -23,5 +23,6 @@
   (routes/app-routes)
   (re-frame/dispatch-sync [:initialize-db])
   (re-frame/dispatch [:initialize-video])
+  (re-frame/dispatch [:initialize-sente])
   (dev-setup)
   (mount-root))

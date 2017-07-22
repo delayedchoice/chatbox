@@ -38,6 +38,16 @@
    (:contacts db)))
 
 (re-frame/reg-sub
+ :users
+ (fn [db]
+   (:users db)))
+(re-frame/reg-sub
+ :logged-in-as
+ (fn [db]
+   (:logged-in-as db)))
+
+
+(re-frame/reg-sub
  :boxes
  (fn [db]
    (:boxes db)))

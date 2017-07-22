@@ -14,7 +14,7 @@
 (defn call-button []
   (let [remote-peer (reagent/atom "")]
     (fn []
-      [:div
+      [:span
         [:a.btn.btn-primary.col-md-4
          {:type "button"
           :on-click #(rf/dispatch [:initiate-call @remote-peer])}
@@ -23,7 +23,18 @@
                           :on-change #(reset! remote-peer (-> % .-target .-value))
                           :value @remote-peer
                           :name "remote-peer-id"}]])))
-
+(defn login-button []
+  (let [user-id (reagent/atom "")]
+    (fn []
+      [:span
+        [:a.btn.btn-primary.col-md-4
+         {:type "button"
+          :on-click #(rf/dispatch [:login @user-id])}
+         "Login"]
+        [:input.col-md-4 {:type "text"
+                          :on-change #(reset! user-id (-> % .-target .-value))
+                          :value @user-id
+                          :name "login-id"}]])))
 (defn player []
   (fn []
     (let [video (rf/subscribe [:video])]
@@ -32,11 +43,14 @@
 
 
 (defn home-panel []
-  (let [pid (rf/subscribe [:peerjs-id])]
+  (let [pid (rf/subscribe [:peerjs-id])
+        user (rf/subscribe [:logged-in-as])]
       [:title "ViiMe"]
       [:div [nav-bar]
-            [:div [:label (str "PID:" @pid)]]
-            [call-button]
+            [:div [:label (str "PID: " @pid)] ]
+            [:div [:label (str "USER: " @user)]]
+;            [call-button]
+            [login-button]
             [inbox]
             [player]]))
 
