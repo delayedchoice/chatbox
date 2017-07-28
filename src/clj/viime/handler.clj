@@ -19,8 +19,8 @@
 
 
 (defn write-file [file filename]
-    (with-open [w (clojure.java.io/output-stream (str "file-" filename ".webm")) ]
-     (clojure.java.io/copy file w)))
+  (with-open [w (clojure.java.io/output-stream (str "file-" filename ".webm")) ]
+   (clojure.java.io/copy file w)))
 
 (def post-message-handler
   (resource
@@ -106,7 +106,7 @@
                 ;     wrap-params
                 ;     wrap-anti-forgery
                 ;     wrap-session
-                    (ring.middleware.defaults/wrap-defaults ring.middleware.defaults/site-defaults )
+;                    (ring.middleware.defaults/wrap-defaults ring.middleware.defaults/site-defaults )
                  ;     wrap-multipart-params
 ;
 ;                     (wrap-resource "public")
