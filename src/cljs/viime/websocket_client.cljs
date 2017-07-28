@@ -43,6 +43,10 @@
   [{:as ev-msg :keys [?data]}]
   (->output! "Push event from server: %s" ?data))
 
+(defmethod -event-msg-handler :users/current
+  [{:as ev-msg :keys [?data]}]
+  (prn "Push current users event from server: %s" ?data))
+
 (defmethod -event-msg-handler :chsk/handshake
   [{:as ev-msg :keys [?data]}]
   (let [[?uid ?csrf-token ?handshake-data] ?data]
@@ -62,15 +66,16 @@
       (ws-connection :ch-recv) event-msg-handler)))
 
 (defn login [user-id ws-connection]
-  (let [_ (prn "CHANNEL STATE: " @(ws-connection :state))] (if (str/blank? user-id)
+  (let [pid (rf/subscribe [:peerjs-id])
+        _ (prn "CHANNEL STATE: " @(ws-connection :state))] (if (str/blank? user-id)
      (js/alert "Please enter a user-id first")
      (do
        (->output! "Logging in with user-id %s" user-id)
        ;     (chsk-send! [:viime/login user-id])
        (sente/ajax-lite "/login" #_"http://localhost:3450/login"
                         {:method :post
-                         :headers {:X-CSRF-Token (:csrf-token @(ws-connection :state)) #_"X-Requested-With" #_"XMLHttpRequest"}
-                         :params  {:user-id (str user-id)}}
+                         :headers {:X-CSRF-Token (:csrf-token @(ws-connection :state))}
+                         :params  {:pid @pid :user-id (str user-id)}}
 
                         (fn [ajax-resp]
                           (->output! "Ajax login response: %s" ajax-resp)
@@ -81,7 +86,6 @@
                               (do
                                 (->output! "Login successful")
                                 (sente/chsk-reconnect! (ws-connection :chsk)))))))
-
        ))))
 
 (when-let [target-el (.getElementById js/document "btn1")]

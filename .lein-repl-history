@@ -1,20 +1,3 @@
-exit
-(use 'figwheel-sidecar-.repl-api)
-(use 'figwheel-sidecar.repl-api)
-(start-figwheel!)
-exit
-(use 'figwheel-sidecar.repl-api)
-(start-figwheel!)
-*e
-exit
-(use 'figwheel-sidecar.repl-api)
-(start-figwheel!)
-exit
-(use 'figwheel-sidecar.repl-api)
-(start-figwheel!)
-(main-)
-(-main)
-exit
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
 (-main)
@@ -476,6 +459,39 @@ exit
 (user/go)
 exit
 (user/go)
+exit
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+(user/stop)
+(user/go)
+(doseq 
+(user/stop)
+(doe
+(doseq [user {:key :value}] (prn "Key: " (first user)))
+(user/stop)
+(user/go)
+(user/stop)
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+(user/stop)
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+lb
+j/
+exit
+(user/go)
+lb
 exit
 (user/go)
 exit

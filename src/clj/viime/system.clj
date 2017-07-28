@@ -12,7 +12,7 @@
             [org.httpkit.server :as http-kit]
             ))
 
-(timbre/set-level! :trace) ; Uncomment for more logging
+(timbre/set-level! :info) ; Uncomment for more logging
 (reset! sente/debug-mode?_ true) ;
 
 (def in-mem-data-store
@@ -27,7 +27,8 @@
   (let [_ (prn "GOING TO MAKE SERVER")
         websocket-server (sente/make-channel-socket-server! (get-sch-adapter) )
         _ (prn "MADE SERVER")
-        ws-ring-routes (ws/create-ring-routes! websocket-server)
+        users (atom {})
+        ws-ring-routes (ws/create-ring-routes! websocket-server users)
         ;webserver (ws/start-web-server! websocket-server 3450)
         _ (base-handler/reset-routes ws-ring-routes)
         webserver (http-kit/run-server #'base-handler/synthetic-routes {:port 3000})
@@ -37,14 +38,19 @@
     (add-watch (:connected-uids websocket-server) :connected-uids
       (fn [_ _ old new]
         (when (not= old new)
-          (prn  "Connected uids change old: \n" old  " new:\n"  new))))
-    (-> system
+          (prn  "Connected uids change old: \n " old  " new:\n "  new))))
+    (add-watch users :users
+      (fn [_ _ old new]
+        ;when (not= old new)
+          (prn  "Connected users change old: \n " old  " new:\n "  new)
+          (ws/update-remote-users-lists new (:send-fn websocket-server))))
+     (-> system
      (assoc :websocket-server websocket-server)
      (assoc :webserver webserver)
      (assoc :router router)
      (assoc :db ds)
      (assoc :connected-uids (:connected-uids websocket-server))
-     (assoc :user-cache (atom (cache/ttl-cache-factory {} :ttl (* 5 60 1000))))
+     (assoc :user-cache users )
          )))
 (defn stop [system]
        (ws/stop-router! (:router system))

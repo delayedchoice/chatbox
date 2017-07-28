@@ -12,8 +12,8 @@
    [org.httpkit.server :as http-kit]
    [taoensso.sente.server-adapters.http-kit :refer (get-sch-adapter)]))
 
-;; (timbre/set-level! :trace) ; Uncomment for more logging
-;(reset! sente/debug-mode?_ true) ; Uncomment for extra debug info
+(timbre/set-level! :trace) ; Uncomment for more logging
+(reset! sente/debug-mode?_ false) ; Uncomment for extra debug info
 
 (defn landing-pg-handler [ring-req]
   (hiccup/html
@@ -29,34 +29,34 @@
      [:script {:src "js/compiled/app.js"}]
      [:script "viime.core.init();" ]] ))
 
-(defn login-handler
+(defn login-handler [users]
   "Here's where you'll add your server-side login/auth procedure (Friend, etc.).
   In our simplified example we'll just always successfully authenticate the user
   with whatever user-id they provided in the auth request."
-  [ring-req]
-  (let [{:keys [session params]} ring-req
-        {:keys [user-id]} params]
-    (debugf "Login request: %s" params)
-    (debugf "Session: %s" session)
-    {:status 200 :session (assoc session :uid user-id) #_:headers #_{"Access-Control-Allow-Origin" "*" }}))
-
-(defn login-options-handler
-  [ring-req]
-    {:status 200 :headers {"Access-Control-Allow-Headers"  "x-requested-with, x-csrf-token" "Access-Control-Allow-Origin" "*" "Allow" "OPTIONS, GET, HEAD, POST"} })
+  (fn [ring-req]
+   (let [{:keys [session params]} ring-req
+         {:keys [user-id pid]} params]
+     (prn "Login request: %s" params)
+     (prn "Session: %s" session)
+     (swap! users assoc user-id pid)
+     {:status 200 :session (assoc session :uid user-id)})))
 
 (defn test-handler [x] "TEST NEW HANDLER SUCCESS")
 
-(defn create-ring-routes! [{:keys [ajax-post-fn ajax-get-or-ws-handshake-fn]}]
-  (let [ws-routes [{:method :get  :src "/landing"       :handler landing-pg-handler}
-                	 {:method :get  :src "/chsk"   :handler ajax-get-or-ws-handshake-fn}
-                	 {:method :post :src "/chsk"   :handler ajax-post-fn}
-                   {:method :get :src "/test" :handler test-handler}
-                   #_{:method :options  :src "/login" :handler login-options-handler}
-                   {:method :post  :src "/login" :handler login-handler}]
+(defn update-remote-users-lists [users send-fn]
+  (let [_ (prn "Updating users: " users)]
+    (doseq [user users]
+     (let [_ (prn "UPDDATING USER: " (first user))] (send-fn (first user) [:users/current users])))))
+
+(defn create-ring-routes! [{:keys [ajax-post-fn ajax-get-or-ws-handshake-fn]} users]
+  (let [ws-routes [{:method :get  :src "/landing" :handler landing-pg-handler}
+                	 {:method :get  :src "/chsk"    :handler ajax-get-or-ws-handshake-fn}
+                	 {:method :post :src "/chsk"    :handler ajax-post-fn}
+                   {:method :get  :src "/test"    :handler test-handler}
+                   {:method :post :src "/login"   :handler (login-handler users)}]
       ring-routes (apply routes
          						(map #(make-route (:method %) (:src %) (:handler %)) ws-routes))]
   (ring.middleware.defaults/wrap-defaults ring-routes ring.middleware.defaults/site-defaults)))
-
 
 (defmulti -event-msg-handler
   "Multimethod to handle Sente `event-msg`s"
@@ -75,17 +75,9 @@
   [{:as ev-msg :keys [event id ?data ring-req ?reply-fn send-fn]}]
   (let [session (:session ring-req)
         uid     (:uid     session)]
-    (debugf "Unhandled event: %s" event)
+;    (debugf "Unhandled event: %s" event)
     (when ?reply-fn
       (?reply-fn {:umatched-event-as-echoed-from-from-server event}))))
-
-(defmethod -event-msg-handler
-  :viime/login
-  [{:as ev-msg :keys [event id ?data ring-req ?reply-fn send-fn]}]
-  (let [session (:session ring-req)
-        uid     (:uid     session)]
-    (debugf "Login event1: %s %s" event session)
-    (assoc session :uid (second event))))
 
 (defn  stop-router! [router] (when-let [stop-fn router] (stop-fn)))
 (defn start-router [{:keys [ch-recv]}]
@@ -100,6 +92,7 @@
       ring-routes ring.middleware.defaults/site-defaults) )
 
 (defn stop-web-server! [webserver] (when-let [stop-fn webserver] (stop-fn)))
+
 (defn start-web-server! [ws port]
   (let [port (or port 0)
         ring-routes (create-ring-routes! ws)

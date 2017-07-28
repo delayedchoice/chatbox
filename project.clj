@@ -114,7 +114,7 @@
     ]}
   :main viime.server
 
-  :aot [viime.server]
+  :aot [clojure.tools.logging.impl viime.server]
 
   :uberjar-name "viime.jar"
 
