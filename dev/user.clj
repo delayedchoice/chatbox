@@ -31,13 +31,13 @@
 (defn start
   "Starts the current development system."
   []
-;  (figwheel/start-figwheel!)
+  (figwheel/start-figwheel!)
   (alter-var-root #'system system/start))
 
 (defn stop
   "Shuts down and destroys the current development system."
   []
-;  (figwheel/stop-figwheel!)
+  (figwheel/stop-figwheel!)
   (alter-var-root #'system
     (fn [s] (when s (system/stop s)))))
 

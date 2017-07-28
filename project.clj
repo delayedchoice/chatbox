@@ -15,18 +15,17 @@
                  [ring "1.5.0"]
                  [ring/ring-anti-forgery "1.1.0"]
                  [org.clojure/core.cache "0.6.4"]
-
-                ;sente
-                [org.clojure/core.async    "0.2.395"]
-                [org.clojure/tools.nrepl   "0.2.12"] ; Optional, for Cider
-                [com.taoensso/sente        "1.11.0"] ; <--- Sente
-                [com.taoensso/timbre       "4.7.4"]
-                [http-kit                             "2.2.0"]
-                [ring/ring-defaults        "0.2.1"]
-                [korma "0.4.1"]
-                [com.h2database/h2 "1.3.170"]
-                [overtone/at-at "1.2.0"]
-                [com.stuartsierra/component "0.3.2"]
+                 ;sente
+                 [org.clojure/core.async    "0.2.395"]
+                 [org.clojure/tools.nrepl   "0.2.12"] ; Optional, for Cider
+                 [com.taoensso/sente        "1.11.0"] ; <--- Sente
+                 [com.taoensso/timbre       "4.7.4"]
+                 [http-kit                             "2.2.0"]
+                 [ring/ring-defaults        "0.2.1"]
+                 [korma "0.4.1"]
+                 [com.h2database/h2 "1.3.170"]
+                 [overtone/at-at "1.2.0"]
+                 [com.stuartsierra/component "0.3.2"]
                 ]
 
   :plugins [[lein-cljsbuild "1.1.4"]
