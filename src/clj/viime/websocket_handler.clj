@@ -46,7 +46,8 @@
 (defn update-remote-users-lists [users send-fn]
   (let [_ (prn "Updating users: " users)]
     (doseq [user users]
-     (let [_ (prn "UPDDATING USER: " (first user))] (send-fn (first user) [:users/current users])))))
+     (let [_ (prn "UPDDATING USER: " (first user))]
+       (send-fn (first user) [:users/current users])))))
 
 (defn create-ring-routes! [{:keys [ajax-post-fn ajax-get-or-ws-handshake-fn]} users]
   (let [ws-routes [{:method :get  :src "/landing" :handler landing-pg-handler}

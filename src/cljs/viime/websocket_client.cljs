@@ -1,5 +1,4 @@
 (ns viime.websocket-client
-
   (:require
    [clojure.string  :as str]
    [cljs.core.async :as async  :refer (<! >! put! chan)]
@@ -12,10 +11,11 @@
   (:require-macros
    [cljs.core.async.macros :as asyncm :refer (go go-loop)]))
 
+(enable-console-print!)
 
 (defn ->output! [fmt & args]
   (let [msg (apply encore/format fmt args)]
-    (timbre/debug msg)))
+    (prn msg)))
 
 (->output! "ClojureScript appears to have loaded correctly.")
 
@@ -41,11 +41,16 @@
 
 (defmethod -event-msg-handler :chsk/recv
   [{:as ev-msg :keys [?data]}]
-  (->output! "Push event from server: %s" ?data))
+  (->output! "Push event from server: %s" ?data)
+  (let [_ (prn "Push current users event from server: %s" ?data)]
+   (rf/dispatch [:update-users (second ?data)])
+    ))
 
 (defmethod -event-msg-handler :users/current
   [{:as ev-msg :keys [?data]}]
-  (prn "Push current users event from server: %s" ?data))
+  (let [_ (prn "Push current users event from server: %s" ?data)]
+   (rf/dispatch [:update-users (second ?data)])
+   (prn "DISPATCHED") ))
 
 (defmethod -event-msg-handler :chsk/handshake
   [{:as ev-msg :keys [?data]}]

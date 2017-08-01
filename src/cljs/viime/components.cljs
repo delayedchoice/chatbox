@@ -83,6 +83,6 @@
       [:div.col-md-2.text-center.list-group-item.header-field [:label "Status"]]
       ]
      (doall
-       (for [user @users]
-        ^{:key (:id user)}
+       (for [user (vals @users)]
+        ^{:key (:login user)}
         [user-view user @styles]))]))

@@ -18,6 +18,31 @@
    (ws/login id (db :websocket-server))
    db))
 
+(defn map-values [m kys f & args]
+  (reduce #(apply update-in %1 [%2] f args) m kys))
+;db-users (map-values (:users db) [:status] (constantly :offline))
+
+(re-frame/reg-event-db
+ :update-users
+ (fn  [db [_ current-users]]
+   (let [_ (prn "CURRENT-USERS-FOR-UPDATE: " current-users)
+         db-users (:users db)
+         db-users (into {}  (for [[login db-user] db-users] [login (assoc db-user :status :offline)]))
+         _ (prn "DBUSERES-ALL-OFFLINE: " db-users)
+         db-users (atom db-users)]
+     (doseq [[login pid] current-users]
+       (let [_ (prn "Login: " login)]
+         (if-let [db-user (seq
+                            (filter #(let [_ (prn "DB-USER: " %  "LOGGED-IN-USER: " login)]
+                                      (= (:login (second %)) login )) @db-users)) ]
+          (let [_ (prn "UPDATING_DB_USER1: " (second (first db-user)))]
+            (swap! db-users assoc (keyword (:login (second (first db-user))))
+                   (-> (second (first db-user))
+                       (assoc :status :online)
+                       (assoc :pid pid)))))))
+     (prn "NEW-DB: " @db-users)
+     (assoc db :users @db-users))))
+
 (re-frame/reg-event-db
  :initialize-sente
  (fn  [db [_ id]]
