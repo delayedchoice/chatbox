@@ -67,11 +67,11 @@
         [:div
          [:p [:a {:href "#"} "Link"]]])]]))
 
-(defn user-view [{:keys [whole-name status]} styles]
+(defn user-view [{:keys [whole-name status pid]} styles]
   [  :div {:class (styles status)}
    [:div.col-md-6.list-group-item.message-field whole-name]
    [:div.col-md-2.list-group-item.message-field status]
-   ;[:div.col-md-2.list-group-item.message-field timedate]
+   [:div.col-md-2.list-group-item.message-field pid]
    ])
 
 (defn inbox []
@@ -81,6 +81,7 @@
      [:div
       [:div.col-md-6.text-center.list-group-item.header-field [:label "Contact"]]
       [:div.col-md-2.text-center.list-group-item.header-field [:label "Status"]]
+      [:div.col-md-2.text-center.list-group-item.header-field [:label "PID"]]
       ]
      (doall
        (for [user (vals @users)]

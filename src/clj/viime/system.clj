@@ -27,8 +27,8 @@
   (let [_ (prn "GOING TO MAKE SERVER")
         websocket-server (sente/make-channel-socket-server! (get-sch-adapter) )
         _ (prn "MADE SERVER")
-        users (atom {})
-        ws-ring-routes (ws/create-ring-routes! websocket-server users)
+        logged-in-users (atom {})
+        ws-ring-routes (ws/create-ring-routes! websocket-server logged-in-users)
         ;webserver (ws/start-web-server! websocket-server 3450)
         _ (base-handler/reset-routes ws-ring-routes)
         webserver (http-kit/run-server #'base-handler/synthetic-routes {:port 3000})
@@ -38,8 +38,12 @@
     (add-watch (:connected-uids websocket-server) :connected-uids
       (fn [_ _ old new]
         (when (not= old new)
-          (prn  "Connected uids change old: \n " old  " new:\n "  new))))
-    (add-watch users :users
+          (let [lius @logged-in-users]
+            (prn  "Connected uids change old: \n " old  " new:\n "  new)
+            (prn  "Connected uids change old: \n " old  " new:\n "  new)
+            ))
+        ))
+    (add-watch logged-in-users :logged-in-users
       (fn [_ _ old new]
         ;when (not= old new)
           (prn  "Connected users change old: \n " old  " new:\n "  new)
@@ -50,7 +54,7 @@
      (assoc :router router)
      (assoc :db ds)
      (assoc :connected-uids (:connected-uids websocket-server))
-     (assoc :user-cache users )
+     (assoc :logged-in-users logged-in-users )
          )))
 (defn stop [system]
        (ws/stop-router! (:router system))

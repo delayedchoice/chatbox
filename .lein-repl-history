@@ -1,9 +1,5 @@
 exit
 (-main)
-(use 'figwheel-sidecar.repl-api)
-(start-figwheel!)
-exit
-(-main)
 exit
 (-main)
 (use 'figwheel-sidecar.repl-api)
@@ -496,5 +492,9 @@ exit
 (map-values {:a true :b "test"} [:a] (constantly false))
 (doc filter)
 (user/go)
+exit
+(user/go)
+kj
+k:e
 exit
 (user/go)

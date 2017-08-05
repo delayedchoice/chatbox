@@ -49,7 +49,7 @@
       [:div [nav-bar]
             [:div [:label (str "PID: " @pid)] ]
             [:div [:label (str "USER: " @user)]]
-;            [call-button]
+            [call-button]
             [login-button]
             [inbox]
             [player]]))

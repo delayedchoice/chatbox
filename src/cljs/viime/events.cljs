@@ -30,7 +30,7 @@
          db-users (into {}  (for [[login db-user] db-users] [login (assoc db-user :status :offline)]))
          _ (prn "DBUSERES-ALL-OFFLINE: " db-users)
          db-users (atom db-users)]
-     (doseq [[login pid] current-users]
+     (doseq [[login user-info] current-users]
        (let [_ (prn "Login: " login)]
          (if-let [db-user (seq
                             (filter #(let [_ (prn "DB-USER: " %  "LOGGED-IN-USER: " login)]
@@ -39,7 +39,7 @@
             (swap! db-users assoc (keyword (:login (second (first db-user))))
                    (-> (second (first db-user))
                        (assoc :status :online)
-                       (assoc :pid pid)))))))
+                       (assoc :pid (:pid user-info))))))))
      (prn "NEW-DB: " @db-users)
      (assoc db :users @db-users))))
 

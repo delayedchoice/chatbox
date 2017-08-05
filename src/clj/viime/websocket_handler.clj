@@ -4,6 +4,7 @@
    [ring.middleware.defaults]
    [compojure.core     :as comp :refer (make-route routes defroutes GET POST)]
    [compojure.route    :as route]
+;   [clojure.spec.alpha :as s]
    [hiccup.core        :as hiccup]
    [clojure.core.async :as async  :refer (<! <!! >! >!! put! chan go go-loop)]
    [taoensso.encore    :as encore :refer (have have?)]
@@ -29,7 +30,7 @@
      [:script {:src "js/compiled/app.js"}]
      [:script "viime.core.init();" ]] ))
 
-(defn login-handler [users]
+(defn login-handler [logged-in-users]
   "Here's where you'll add your server-side login/auth procedure (Friend, etc.).
   In our simplified example we'll just always successfully authenticate the user
   with whatever user-id they provided in the auth request."
@@ -38,23 +39,23 @@
          {:keys [user-id pid]} params]
      (prn "Login request: %s" params)
      (prn "Session: %s" session)
-     (swap! users assoc user-id pid)
+     (swap! logged-in-users assoc user-id {:uid user-id :pid pid :status :online})
      {:status 200 :session (assoc session :uid user-id)})))
 
 (defn test-handler [x] "TEST NEW HANDLER SUCCESS")
 
 (defn update-remote-users-lists [users send-fn]
-  (let [_ (prn "Updating users: " users)]
+  (let [_ (prn "Updating Remote USERS " users)]
     (doseq [user users]
-     (let [_ (prn "UPDDATING USER: " (first user))]
+     (let [_ (prn "UPDDATING REMOTE USER: " (first user))]
        (send-fn (first user) [:users/current users])))))
 
-(defn create-ring-routes! [{:keys [ajax-post-fn ajax-get-or-ws-handshake-fn]} users]
+(defn create-ring-routes! [{:keys [ajax-post-fn ajax-get-or-ws-handshake-fn]} logged-in-users]
   (let [ws-routes [{:method :get  :src "/landing" :handler landing-pg-handler}
                 	 {:method :get  :src "/chsk"    :handler ajax-get-or-ws-handshake-fn}
                 	 {:method :post :src "/chsk"    :handler ajax-post-fn}
                    {:method :get  :src "/test"    :handler test-handler}
-                   {:method :post :src "/login"   :handler (login-handler users)}]
+                   {:method :post :src "/login"   :handler (login-handler logged-in-users)}]
       ring-routes (apply routes
          						(map #(make-route (:method %) (:src %) (:handler %)) ws-routes))]
   (ring.middleware.defaults/wrap-defaults ring-routes ring.middleware.defaults/site-defaults)))
