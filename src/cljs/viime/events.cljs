@@ -18,6 +18,12 @@
    (ws/login id (db :websocket-server))
    db))
 
+(re-frame/reg-event-db
+ :logged-in
+ (fn  [db [_ id]]
+   (assoc db :logged-in-as id)))
+
+
 (defn map-values [m kys f & args]
   (reduce #(apply update-in %1 [%2] f args) m kys))
 ;db-users (map-values (:users db) [:status] (constantly :offline))

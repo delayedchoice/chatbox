@@ -14,7 +14,7 @@
 (defn call-button []
   (let [remote-peer (reagent/atom "")]
     (fn []
-      [:span
+      [:div.row
         [:a.btn.btn-primary.col-md-4
          {:type "button"
           :on-click #(rf/dispatch [:initiate-call @remote-peer])}
@@ -26,7 +26,7 @@
 (defn login-button []
   (let [user-id (reagent/atom "")]
     (fn []
-      [:span
+      [:div.row
         [:a.btn.btn-primary.col-md-4
          {:type "button"
           :on-click #(rf/dispatch [:login @user-id])}

@@ -1,0 +1,13 @@
+"Push event from server: [:users/current {\"you\" \"d8q0o3udya9ejyvi\"}]"
+
+
+"Connected users change old: \n " {"you" "pvwlvqb3jlmims4i", "jesus" "4d439xz79l766r", "test" "uff73zn9gzctmx6r", "bobi" "5ai85gjoliz77gb9"} "
+new:\n " {"you" "pvwlvqb3jlmims4i", "jesus" "4d439xz79l766r", "test" "uff73zn9gzctmx6r", "bobi" "fcl57no11u2i6bt9"}
+"Updating users: " {"you" "pvwlvqb3jlmims4i", "jesus" "4d439xz79l766r", "test" "uff73zn9gzctmx6r", "bobi" "fcl57no11u2i6bt9"}
+"UPDDATING USER: " "you"
+"UPDDATING USER: " "jesus"
+"UPDDATING USER: " "test"
+"UPDDATING USER: " "bobi"
+
+
+216.238.146.10

@@ -90,6 +90,7 @@
                               (->output! "Login failed")
                               (do
                                 (->output! "Login successful")
+                                (rf/dispatch [:logged-in(str user-id)])
                                 (sente/chsk-reconnect! (ws-connection :chsk)))))))
        ))))
 
