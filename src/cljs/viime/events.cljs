@@ -78,7 +78,7 @@
    (let [m (-> (.getUserMedia (.-mediaDevices js/navigator) #js {:audio true :video true})
                (.then  #(re-frame/dispatch [:set-stream %]) )
                (.catch #(js/alert (str "error" %))))
-         peer (js/Peer. #js {"key" "lwjd5qra8257b9"})
+         peer (js/Peer. #js {"key" "lwjd5qra8257b9" "secure" "true"})
          _ (.on peer "open" #(re-frame/dispatch [:peer-open %]) )
          _ (.on peer "call" #(re-frame/dispatch [:peer-incoming-call %]) ) ]
 		(assoc-in db [:peer] peer))))
