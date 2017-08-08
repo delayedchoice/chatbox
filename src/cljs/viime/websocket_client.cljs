@@ -19,11 +19,13 @@
 
 (->output! "ClojureScript appears to have loaded correctly.")
 
-(def ws-connection  (sente/make-channel-socket-client!  "/chsk" #_{:host "localhost:3450"}))
-(def chsk       (ws-connection :chsk))
-(def ch-chsk    (ws-connection :ch-recv)) ; ChannelSocket's receive channel
-(def chsk-send! (ws-connection :send-fn)) ; ChannelSocket's send API fn
-(def chsk-state (ws-connection :state))   ; Watchable, read-only atom
+;(def ws-connection  (sente/make-channel-socket-client!  "/chsk" {:host "fenario.hopto.org:443"
+;							;	 :protocol "https"
+;							        }))
+;(def chsk       (ws-connection :chsk))
+;(def ch-chsk    (ws-connection :ch-recv)) ; ChannelSocket's receive channel
+;(def chsk-send! (ws-connection :send-fn)) ; ChannelSocket's send API fn
+;(def chsk-state (ws-connection :state))   ; Watchable, read-only atom
 
 (defmulti -event-msg-handler :id)
 

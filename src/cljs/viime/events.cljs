@@ -52,7 +52,9 @@
 (re-frame/reg-event-db
  :initialize-sente
  (fn  [db [_ id]]
-   (let [websocket-server (sente/make-channel-socket-client!  "/chsk" {:host "localhost:3000"})
+   (let [websocket-server (sente/make-channel-socket-client!  "/chsk" {:host "fenario.hopto.org:443"
+							     ;  :protocol "https"
+								      })
         ; _ (prn "WEBSOCKEt_SERVER: " websocket-server)
          ]
      (ws/start! websocket-server)
@@ -78,7 +80,7 @@
    (let [m (-> (.getUserMedia (.-mediaDevices js/navigator) #js {:audio true :video true})
                (.then  #(re-frame/dispatch [:set-stream %]) )
                (.catch #(js/alert (str "error" %))))
-         peer (js/Peer. #js {"key" "lwjd5qra8257b9" "secure" "true"})
+         peer (js/Peer. "welshitalki" #js  {"debug" 3 "host" "fenario.hopto.org" "port" 9000 "secure" "true" })
          _ (.on peer "open" #(re-frame/dispatch [:peer-open %]) )
          _ (.on peer "call" #(re-frame/dispatch [:peer-incoming-call %]) ) ]
 		(assoc-in db [:peer] peer))))
