@@ -21,7 +21,12 @@
 (re-frame/reg-event-db
  :logged-in
  (fn  [db [_ id]]
-   (assoc db :logged-in-as id)))
+  (let [peer (js/Peer. id #js  {"debug" 3 "host" "fenario.hopto.org" "port" 9000 "secure" "true" })
+        _ (.on peer "open" #(re-frame/dispatch [:peer-open %]) )
+        _ (.on peer "call" #(re-frame/dispatch [:peer-incoming-call %]) ) ]
+		 (-> db
+         (assoc-in [:peer] peer)
+         (assoc :logged-in-as id))) ))
 
 
 (defn map-values [m kys f & args]
@@ -80,10 +85,8 @@
    (let [m (-> (.getUserMedia (.-mediaDevices js/navigator) #js {:audio true :video true})
                (.then  #(re-frame/dispatch [:set-stream %]) )
                (.catch #(js/alert (str "error" %))))
-         peer (js/Peer. "welshitalki" #js  {"debug" 3 "host" "fenario.hopto.org" "port" 9000 "secure" "true" })
-         _ (.on peer "open" #(re-frame/dispatch [:peer-open %]) )
-         _ (.on peer "call" #(re-frame/dispatch [:peer-incoming-call %]) ) ]
-		(assoc-in db [:peer] peer))))
+           ]
+		db)))
 
 (re-frame/reg-event-db
  :peer-open

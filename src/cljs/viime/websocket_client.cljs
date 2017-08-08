@@ -96,50 +96,6 @@
                                 (sente/chsk-reconnect! (ws-connection :chsk)))))))
        ))))
 
-(when-let [target-el (.getElementById js/document "btn1")]
-  (.addEventListener target-el "click"
-    (fn [ev]
-      (->output! "Button 1 was clicked (won't receive any reply from server)")
-      (chsk-send! [:example/button1 {:had-a-callback? "nope"}]))))
-
-(when-let [target-el (.getElementById js/document "btn2")]
-  (.addEventListener target-el "click"
-    (fn [ev]
-      (->output! "Button 2 was clicked (will receive reply from server)")
-      (chsk-send! [:example/button2 {:had-a-callback? "indeed"}] 5000
-        (fn [cb-reply] (->output! "Callback reply: %s" cb-reply))))))
-
-(when-let [target-el (.getElementById js/document "btn3")]
-  (.addEventListener target-el "click"
-    (fn [ev]
-      (->output! "Button 3 was clicked (will ask server to test rapid async push)")
-      (chsk-send! [:example/test-rapid-push]))))
-
-(when-let [target-el (.getElementById js/document "btn4")]
-  (.addEventListener target-el "click"
-    (fn [ev]
-      (->output! "Button 4 was clicked (will toggle async broadcast loop)")
-      (chsk-send! [:example/toggle-broadcast] 5000
-        (fn [cb-reply]
-          (when (cb-success? cb-reply)
-            (let [loop-enabled? cb-reply]
-              (if loop-enabled?
-                (->output! "Async broadcast loop now enabled")
-                (->output! "Async broadcast loop now disabled")))))))))
-
-(when-let [target-el (.getElementById js/document "btn5")]
-  (.addEventListener target-el "click"
-                     (fn [ev]
-                       (->output! "Disconnecting")
-                       (sente/chsk-disconnect! chsk))))
-
-(when-let [target-el (.getElementById js/document "btn6")]
-  (.addEventListener target-el "click"
-                     (fn [ev]
-                       (->output! "Reconnecting")
-                       (sente/chsk-reconnect! chsk))))
-;;;; Init stuff
-
 (defn start! [ws-connection] (start-router! ws-connection))
 
 ;(defonce _start-once (start! ))

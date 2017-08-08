@@ -5,6 +5,18 @@ exit
 (-main)
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
+exit
+(-main)
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+exit
+(-main)
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
+exit
+(-main)
+(use 'figwheel-sidecar.repl-api)
+(start-figwheel!)
 j(name :test0
 )
 (name :test)
@@ -486,15 +498,3 @@ exit
 exit
 (user/go)
 exit
-(user/go)
-exit
-(user/go)
-exit
-(user/go)
-exit
-(user/go)
-exig
-exit
-(user/go)
-exit
-(user/go)
