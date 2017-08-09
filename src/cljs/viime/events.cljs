@@ -21,7 +21,14 @@
 (re-frame/reg-event-db
  :logged-in
  (fn  [db [_ id]]
-  (let [peer (js/Peer. id #js  {"debug" 3 "host" "fenario.hopto.org" "port" 9000 "secure" "true" })
+  (let [peer (js/Peer. id #js  {"debug" 3 
+				"host" "fenario.hopto.org" 
+				"port" 9000 
+				"secure" "true"
+				"config" {"iceServers" [
+    					 	{ "url" "stun:fenario.hopto.org:5349" }
+    						{ "url" "turn:bobi@fenario.hopto.org:5349" 
+                                                  "credential" "9Bergen4" } ]}  })
         _ (.on peer "open" #(re-frame/dispatch [:peer-open %]) )
         _ (.on peer "call" #(re-frame/dispatch [:peer-incoming-call %]) ) ]
 		 (-> db
