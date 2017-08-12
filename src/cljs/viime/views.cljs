@@ -52,11 +52,12 @@
        [:strong "Connected users:"]
        [:div {:id "otherClients"}
         (for [user @data]
-          ^{:key (:id user)}
+          ^{:key user}
           [:a.btn.btn-primary.col-md-4
               {:type "button"
                :on-click #(rf/dispatch [:perform-call user])}
          user]) ] ]
+       [:br]
       [:div {:id "videos"}
        [:video {:autoPlay "autoplay" :class "easyrtcMirror" :id "selfVideo" :muted true }]
        [:div :style "position:relative;float:left;"
