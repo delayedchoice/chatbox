@@ -147,7 +147,7 @@
  :update-easyrtc-info
  (fn  [db [_ room-name data primary?]]
    (-> db
-       (assoc :remote-data data)
+       (assoc :remote-data (js->clj data))
        (assoc :room-name room-name)
        (assoc :primary? primary?))))
 
