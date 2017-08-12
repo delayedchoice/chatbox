@@ -41,6 +41,26 @@
      [:div.video-container
        [:video.col-md-8 {:src @video :controls false :autoPlay true :id "video"}]])))
 
+(defn demo []
+  (fn []
+    (let [data (rf/subscribe [:remote-data])
+          easyrtcid (rf/subscribe [:easyrtcid])]
+     [:div {:id "demoContainer"}
+      [:div {:id "connectControls"}
+       [:div {:id "iam"} @easyrtcid ]
+       [:br]
+       [:strong "Connected users:"]
+       [:div {:id "otherClients"}
+        (for [user @data]
+          [:a.btn.btn-primary.col-md-4
+              {:type "button"
+               :on-click #(rf/dispatch [:perform-call user])}
+         user]) ] ]
+      [:div {:id "videos"}
+       [:video {:autoPlay "autoplay" :class "easyrtcMirror" :id "selfVideo" :muted true }]
+       [:div :style "position:relative;float:left;"
+        [:video {:autoPlay "autoplay" :id "callerVideo"}]]]]) )
+ )
 
 (defn home-panel []
   (let [pid (rf/subscribe [:peerjs-id])
@@ -52,7 +72,7 @@
             [call-button]
             [login-button]
             [inbox]
-            [player]]))
+            [demo]]))
 
 (defn main-panel []
   (fn []

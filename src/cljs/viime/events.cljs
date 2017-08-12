@@ -5,7 +5,7 @@
               [viime.rest :as r]
               [viime.websocket-client :as ws]
               [taoensso.sente  :as sente]
-              [peerjs]))
+              [easyrtc.js]))
 
 (re-frame/reg-event-db
  :initialize-db
@@ -21,13 +21,13 @@
 (re-frame/reg-event-db
  :logged-in
  (fn  [db [_ id]]
-  (let [peer (js/Peer. id #js  {"debug" 3 
-				"host" "fenario.hopto.org" 
-				"port" 9000 
+  (let [peer (js/Peer. id #js  {"debug" 3
+				"host" "fenario.hopto.org"
+				"port" 9000
 				"secure" "true"
 				"config" {"iceServers" [
     					 	{ "url" "stun:fenario.hopto.org:5349" }
-    						{ "url" "turn:bobi@fenario.hopto.org:5349" 
+    						{ "url" "turn:bobi@fenario.hopto.org:5349"
                                                   "credential" "9Bergen4" } ]}  })
         _ (.on peer "open" #(re-frame/dispatch [:peer-open %]) )
         _ (.on peer "call" #(re-frame/dispatch [:peer-incoming-call %]) ) ]
@@ -94,7 +94,104 @@
                (.catch #(js/alert (str "error" %))))
            ]
 		db)))
+;
+;(defn clear-connection-list []
+;  (let [other-client-div (.getElementById js/document "otherClients") ]
+;     (while (.hasChildNodes other-client-div)
+;            (.removeChild other-client-div (.-lastChild other-client-div)))))
 
+;function convertListToButtons (roomName, data, isPrimary) {
+;  clearConnectList();
+;  var otherClientDiv = document.getElementById("otherClients");
+;  for(var easyrtcid in data) {
+;    var button = document.createElement("button");
+;    button.onclick = function(easyrtcid) {
+;      return function() {
+;        performCall(easyrtcid);
+;      };
+;    }(easyrtcid);
+;
+;    var label = document.createTextNode(easyrtc.idToName(easyrtcid));
+;    button.appendChild(label);
+;    otherClientDiv.appendChild(button);
+;  }
+;}
+
+;function performCall (otherEasyrtcid) {
+;   easyrtc.hangupAll ();
+;   var successCB = function () {};
+;   var failureCB = function () {};
+;   easyrtc.call (otherEasyrtcid, successCB, failureCB);
+;}
+
+;(defn perform-call [other-easyrtcid]
+; (.call easyrtc other-easyrtcid #() #()) )
+
+(re-frame/reg-event-db
+ :perform-call
+ (fn  [db [_ user]]
+   (.hangupAll js/easyrtc)
+   (.call js/easyrtc user #() #())))
+
+;(defn convert-list-to-buttons [room-name data primary?]
+; (let [other-client-div (.getElementById js/document "otherClients") ]
+;   (clear-connection-list)
+;   (doseq [easyrtcid data]
+;     (let [button (.createElement js/document "button")
+;           _ (set! button .-onclick #(perform-call %) )
+;           label (.createTextNode js/document (.idToName easyrtc easyrtcid))
+;           (.appendChild button label)]
+;       (.appendChild other-client-div button))))
+
+(re-frame/reg-event-db
+ :update-easyrtc-info
+ (fn  [db [_ room-name data primary?]]
+   (-> db
+       (assoc :remote-data data)
+       (assoc :room-name room-name)
+       (assoc :primary? primary?))))
+
+; function loginSuccess(easyrtcid) {
+;  selfEasyrtcid = easyrtcid;
+;  document.getElementById("iam").innerHTML = "I am " + easyrtc.cleanId(easyrtcid);
+;}
+
+(re-frame/reg-event-db
+ :login-success
+ (fn  [db [_ easyrtcid]]
+   (assoc db :easyrtcid (.cleanId js/easyrtc easyrtcid))))
+;function loginFailure(errorCode, message) {
+;  easyrtc.showError(errorCode, message);
+;}
+(re-frame/reg-event-db
+ :login-failure
+ (fn  [db [_ error-code message]]
+   (.showError js/easyrtc error-code message)))
+
+;function connect() {
+;  easyrtc.setVideoDims(640,480);
+;  easyrtc.setRoomOccupantListener(convertListToButtons);
+;  easyrtc.easyApp("easyrtc.audioVideoSimple", "selfVideo", ["callerVideo"], loginSuccess, loginFailure);
+; }
+
+
+(re-frame/reg-event-db
+ :initialize-easyrtc
+ (fn  [db _]
+   (let []
+    (prn "Error0")
+     (.setVideoDims js/easyrtc 640 480)
+     (prn "Error1")
+     (.setRoomOccupantListener js/easyrtc #(re-frame/dispatch [:update-easyrtc-info %1 %2 %3]) )
+    (prn "Error2")
+     (.easyApp js/easyrtc "easyrtc.audioVideoSimple"
+                          "selfVideo"
+                          (clj->js ["callerVideo"])
+                          #(re-frame/dispatch [:login-success  %1])
+                          #(re-frame/dispatch [:login-error %1 %2])
+                         )
+    (prn "Error3")
+		db)))
 (re-frame/reg-event-db
  :peer-open
  (fn [db [_ id]]

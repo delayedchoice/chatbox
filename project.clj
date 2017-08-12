@@ -75,8 +75,14 @@
                                           ;:module-type :commonjs
                                           }
                                           ,
-                                          {:file "resources/public/js/peer.min.js"
-                                          :provides ["peerjs"]}]
+                                         {:file "src/easyrtc/socket.io.js"
+                                          ;:file-min "react/react.min.js"
+                                          :provides ["socket.io.js"]},
+                                         {:file "src/easyrtc/easyrtc.js"
+                                          ; :file-min "react/react.min.js"
+                                          :provides ["easyrtc.js"]
+                                          :requires ["socket.io.js"]}
+                                          ]
                     :output-to            "resources/public/js/compiled/app.js"
                     :output-dir           "resources/public/js/compiled/out"
                     :asset-path           "js/compiled/out"

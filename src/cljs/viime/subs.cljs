@@ -8,6 +8,16 @@
    (:frames db)))
 
 (re-frame/reg-sub
+ :remote-data
+ (fn [db]
+   (:remote-data db)))
+
+(re-frame/reg-sub
+ :easyrtcid
+ (fn [db]
+   (:easyrtcid db)))
+
+(re-frame/reg-sub
  :peerjs-id
  (fn [db]
    (:peerjs-id db)))
