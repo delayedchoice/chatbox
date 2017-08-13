@@ -138,6 +138,12 @@
                           #(re-frame/dispatch [:login-error %1 %2])
                          )
     (prn "Error3")
+		(.setOption js/easyrtc
+                "appIceServers"
+                [{ "url" "stun:fenario.hopto.org:5349" }
+                 { "url" "turn:fenario.hopto.org:5349" "username" "bobi" "credential" "Bergen4" }
+			           { "url" "turn:fenario.hopto.org:5349?transport=tcp" "username" "bobi" "credential" "Bergen4" }])
+(prn "Error4")
 		db)))
 
 (re-frame/reg-event-db
