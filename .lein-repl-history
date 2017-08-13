@@ -1,8 +1,3 @@
-exit
-(-main)
-(use 'figwheel-sidecar.repl-api)
-(start-figwheel!)
-exit
 (-main)
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
@@ -498,3 +493,8 @@ exit
 (user/go)
 exit
 (user/go)
+exit
+(user/go)
+exit
+(user/go)
+jjj
