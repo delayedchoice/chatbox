@@ -94,54 +94,12 @@
                (.catch #(js/alert (str "error" %))))
            ]
 		db)))
-;
-;(defn clear-connection-list []
-;  (let [other-client-div (.getElementById js/document "otherClients") ]
-;     (while (.hasChildNodes other-client-div)
-;            (.removeChild other-client-div (.-lastChild other-client-div)))))
-
-;function convertListToButtons (roomName, data, isPrimary) {
-;  clearConnectList();
-;  var otherClientDiv = document.getElementById("otherClients");
-;  for(var easyrtcid in data) {
-;    var button = document.createElement("button");
-;    button.onclick = function(easyrtcid) {
-;      return function() {
-;        performCall(easyrtcid);
-;      };
-;    }(easyrtcid);
-;
-;    var label = document.createTextNode(easyrtc.idToName(easyrtcid));
-;    button.appendChild(label);
-;    otherClientDiv.appendChild(button);
-;  }
-;}
-
-;function performCall (otherEasyrtcid) {
-;   easyrtc.hangupAll ();
-;   var successCB = function () {};
-;   var failureCB = function () {};
-;   easyrtc.call (otherEasyrtcid, successCB, failureCB);
-;}
-
-;(defn perform-call [other-easyrtcid]
-; (.call easyrtc other-easyrtcid #() #()) )
 
 (re-frame/reg-event-db
  :perform-call
  (fn  [db [_ user]]
    (.hangupAll js/easyrtc)
    (.call js/easyrtc user #() #())))
-
-;(defn convert-list-to-buttons [room-name data primary?]
-; (let [other-client-div (.getElementById js/document "otherClients") ]
-;   (clear-connection-list)
-;   (doseq [easyrtcid data]
-;     (let [button (.createElement js/document "button")
-;           _ (set! button .-onclick #(perform-call %) )
-;           label (.createTextNode js/document (.idToName easyrtc easyrtcid))
-;           (.appendChild button label)]
-;       (.appendChild other-client-div button))))
 
 (re-frame/reg-event-db
  :update-easyrtc-info
@@ -151,28 +109,15 @@
        (assoc :room-name room-name)
        (assoc :primary? primary?))))
 
-; function loginSuccess(easyrtcid) {
-;  selfEasyrtcid = easyrtcid;
-;  document.getElementById("iam").innerHTML = "I am " + easyrtc.cleanId(easyrtcid);
-;}
-
 (re-frame/reg-event-db
  :login-success
  (fn  [db [_ easyrtcid]]
    (assoc db :easyrtcid (.cleanId js/easyrtc easyrtcid))))
-;function loginFailure(errorCode, message) {
-;  easyrtc.showError(errorCode, message);
-;}
+
 (re-frame/reg-event-db
  :login-failure
  (fn  [db [_ error-code message]]
    (.showError js/easyrtc error-code message)))
-
-;function connect() {
-;  easyrtc.setVideoDims(640,480);
-;  easyrtc.setRoomOccupantListener(convertListToButtons);
-;  easyrtc.easyApp("easyrtc.audioVideoSimple", "selfVideo", ["callerVideo"], loginSuccess, loginFailure);
-; }
 
 
 (re-frame/reg-event-db
@@ -192,6 +137,7 @@
                          )
     (prn "Error3")
 		db)))
+
 (re-frame/reg-event-db
  :peer-open
  (fn [db [_ id]]

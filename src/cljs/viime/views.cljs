@@ -51,6 +51,7 @@
        [:br]
        [:strong "Connected users:"]
        [:div {:id "otherClients"}
+        (prn  "DATA: " @data)
         (for [user @data]
           ^{:key user}
           [:a.btn.btn-primary.col-md-4
