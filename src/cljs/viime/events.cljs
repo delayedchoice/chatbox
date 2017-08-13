@@ -112,11 +112,13 @@
 (re-frame/reg-event-db
  :login-success
  (fn  [db [_ easyrtcid]]
+   (prn "SUCCESS: " easyrtcid)
    (assoc db :easyrtcid (.cleanId js/easyrtc easyrtcid))))
 
 (re-frame/reg-event-db
  :login-failure
  (fn  [db [_ error-code message]]
+  (prn "FAILURE:" error-code  ":" message)
    (.showError js/easyrtc error-code message)))
 
 
