@@ -142,7 +142,7 @@
                 "appIceServers"
                 (clj->js
                   [{ "url" "stun:fenario.hopto.org:5349" }
-                   { "url" "turn:fenario.hopto.org:5349" "username" "bobi" "credential" "Bergen4" }
+                   { "url" "turn:fenario.hopto.org:5349" "username" "bobi" "credential" "9Bergen4" }
                    { "url" "turn:fenario.hopto.org:5349?transport=tcp" "username" "bobi" "credential" "Bergen4" }]))
 (prn "Error4")
 		db)))
