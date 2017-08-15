@@ -13,3 +13,5 @@ new:\n " {"you" "pvwlvqb3jlmims4i", "jesus" "4d439xz79l766r", "test" "uff73zn9gz
 client.cljs?rel=1502040675972:34 "DATA: " {"pElstrQiP5PTRln3" {"easyrtcid" "pElstrQiP5PTRln3", "roomJoinTime" 1502657155240, "presence" {"show" "chat", "status" nil}, "apiField" {"mediaIds" {"fieldName" "mediaIds", "fieldValue" {"default" "843z42Wf7m8fc2NB5AXsYOrsiCXhSVB1d5Bl"}}}}}
 
 216.238.146.10
+
+sudo turnserver -L 104.131.115.115 -v -a -f -r fenario.hopto.org
