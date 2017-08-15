@@ -104,21 +104,22 @@
 (re-frame/reg-event-db
  :update-easyrtc-info
  (fn  [db [_ room-name data primary?]]
-   (-> db
-       (assoc :remote-data (js->clj data))
-       (assoc :room-name room-name)
-       (assoc :primary? primary?))))
+   (let [_ (prn "DataUpdate: " (js->clj data))]
+     (-> db
+        (assoc :remote-data (js->clj data))
+        (assoc :room-name room-name)
+        (assoc :primary? primary?)))))
 
 (re-frame/reg-event-db
  :login-success
  (fn  [db [_ easyrtcid]]
-   (prn "SUCCESS: " easyrtcid)
+   (prn "LoginSuccess: " easyrtcid)
    (assoc db :easyrtcid (.cleanId js/easyrtc easyrtcid))))
 
 (re-frame/reg-event-db
  :login-failure
  (fn  [db [_ error-code message]]
-  (prn "FAILURE:" error-code  ":" message)
+  (prn "LoginFailure:  " error-code  ":" message)
    (.showError js/easyrtc error-code message)))
 
 
@@ -126,18 +127,15 @@
  :initialize-easyrtc
  (fn  [db _]
    (let []
-    (prn "Error0")
      (.setVideoDims js/easyrtc 640 480)
-     (prn "Error1")
      (.setRoomOccupantListener js/easyrtc #(re-frame/dispatch [:update-easyrtc-info %1 %2 %3]) )
-    (prn "Error2")
      (.easyApp js/easyrtc "easyrtc.audioVideoSimple"
                           "selfVideo"
                           (clj->js ["callerVideo"])
                           #(re-frame/dispatch [:login-success  %1])
                           #(re-frame/dispatch [:login-error %1 %2])
                          )
-    (prn "Error3")
+    (prn "Initialized EasyRTC")
 		db)))
 
 (re-frame/reg-event-db

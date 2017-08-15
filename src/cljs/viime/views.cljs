@@ -45,12 +45,12 @@
   (fn []
     (let [data (rf/subscribe [:remote-data])
           easyrtcid (rf/subscribe [:easyrtcid])]
-     [:div {:id "demoContainer"}
-      [:div {:id "connectControls"}
+     [:div.demoContainer
+      [:div.connectControls
        [:div {:id "iam"} @easyrtcid ]
        [:br]
        [:strong "Connected users:"]
-       [:div {:id "otherClients"}
+       [:div.otherClients
         (prn  "DATA: " @data)
         (for [[user value] @data]
           ^{:key user}
@@ -60,9 +60,9 @@
          user]) ] ]
        [:br]
       [:div {:id "videos"}
-       [:video {:autoPlay "autoplay" :class "easyrtcMirror" :id "selfVideo" :muted true }]
-       [:div :style "position:relative;float:left;"
-        [:video {:autoPlay "autoplay" :id "callerVideo"}]]]]) )
+       [:video.selfVideo.easyrtcMirror {:autoPlay "autoplay" :id "selfVideo" :muted true }]
+       [:div.callerDiv
+        [:video.callerVideo {:autoPlay "autoplay" :id "callerVideo"}]]]]) )
  )
 
 (defn home-panel []

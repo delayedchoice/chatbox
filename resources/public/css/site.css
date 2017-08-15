@@ -19,16 +19,6 @@ SPAN.textbox INPUT {
   border: 1px;
   background-color: #FFF;
 }
-video {
-  width: 80%;
-  left: 50%;
-  top: 0;
-  -ms-transform: translateX(-50%);
-  -webkit-transform: translateX(-50%);
-  transform: translateX(-50%);
-  min-width: 80%;
-  min-height: 80%;
-}
 .width-control {
   width: 80%;
   text-align: center;
@@ -92,4 +82,34 @@ body div.message:hover {
 }
 footer {
   margin: 50px 0;
+}
+.demoContainer {
+  position: relative;
+}
+.connectControls {
+  float: left;
+  width: 250px;
+  text-align: center;
+  border: 2px solid black;
+}
+.otherClients {
+  height: 200px;
+  overflow-y: scroll;
+}
+video.selfVideo {
+  height: 225px;
+  width: 300px;
+  float: left;
+  border: 1px solid gray;
+  margin-left: 10px;
+}
+video.callerVideo {
+  height: 225px;
+  width: 300px;
+  border: 1px solid gray;
+  margin-left: 10px;
+}
+.callerDiv {
+  position: relative;
+  float: left;
 }
