@@ -1,7 +1,7 @@
 (ns viime.events
     (:require [re-frame.core :as re-frame]
               [cljs-uuid-utils.core :as uuid]
-						  [clojure.set :as st]
+              [clojure.set :as st]
               [viime.db :as db]
               [viime.rest :as r]
               [viime.websocket-client :as ws]
@@ -104,14 +104,15 @@
    (.call js/easyrtc user #() #())))
 
 (defn update-users [db remote-users]
-  (let [
-        diffs (st/difference (keys remote-users ) (keys (:users db)))
+  (let [diffs (st/difference (set (keys remote-users )) (set (keys (:users db))))
         _ (prn "diffs:  " diffs)
         informed (into {} (for [[k v] remote-users] [k (assoc v :notified true)]))
         logged-out (st/difference (keys (:users db)) (keys remote-users))
         users (into {}  (for [[k v] (db :users) :when (contains? logged-out k)] [k v] ))
+        users (merge (db :users) informed )
+	_ (prn (str "users: " users))
         ]
-    (merge informed users)))
+   users))
 
 (re-frame/reg-event-db
  :update-easyrtc-info
