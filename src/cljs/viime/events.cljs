@@ -105,15 +105,16 @@
 (defn update-users [db remote-users]
   (let [diffs (data/diff-associative remote-users (:users db))]
     (prn "diffs:  " diffs)
-    diffs))
+    remote-users))
 
 (re-frame/reg-event-db
  :update-easyrtc-info
  (fn  [db [_ room-name data primary?]]
    (let [remote-users (js->clj data)
-         _ (prn "DataUpdate: " )
+         _ (prn "DataUpdate: " remote-users )
          users (update-users db remote-users)]
      (-> db
+        (assoc :users users)
         (assoc :remote-data remote-users)
         (assoc :room-name room-name)
         (assoc :primary? primary?)))))
@@ -122,7 +123,10 @@
  :login-success
  (fn  [db [_ easyrtcid]]
    (prn "LoginSuccess: " easyrtcid)
-   (assoc db :easyrtcid (.cleanId js/easyrtc easyrtcid))))
+   (-> db
+       (assoc :users [])
+       (assoc :easyrtcid (.cleanId js/easyrtc easyrtcid))
+       )))
 
 (re-frame/reg-event-db
  :login-failure
