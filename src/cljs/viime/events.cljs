@@ -5,6 +5,7 @@
               [viime.rest :as r]
               [viime.websocket-client :as ws]
               [taoensso.sente  :as sente]
+              [clojure.data :as data]
               [easyrtc.js]))
 
 (re-frame/reg-event-db
@@ -101,12 +102,19 @@
    (.hangupAll js/easyrtc)
    (.call js/easyrtc user #() #())))
 
+(defn update-users [db remote-users]
+  (let [diffs (data/diff-associative remote-users (:users db))]
+    (prn "diffs:  " diffs)
+    diffs))
+
 (re-frame/reg-event-db
  :update-easyrtc-info
  (fn  [db [_ room-name data primary?]]
-   (let [_ (prn "DataUpdate: " (js->clj data))]
+   (let [remote-users (js->clj data)
+         _ (prn "DataUpdate: " )
+         users (update-users db remote-users)]
      (-> db
-        (assoc :remote-data (js->clj data))
+        (assoc :remote-data remote-users)
         (assoc :room-name room-name)
         (assoc :primary? primary?)))))
 

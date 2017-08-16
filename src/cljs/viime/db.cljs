@@ -5,7 +5,7 @@
 (def default-db
   {:name "re-frame"
    :easyrtcid "Nobody"
-   :remote-data []
+   :remote-data {}
    :logged-in-as "Nobody"
    :users {:aran    {:id 1 :login "aran" :whole-name "Aran Jones" :status :offline}
            :bobi    {:id 2 :login "bobi" :whole-name "Bobby Harris" :status :offline}
