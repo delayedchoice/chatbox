@@ -104,13 +104,14 @@
    (.call js/easyrtc user #() #())))
 
 (defn update-users [db remote-users]
-  (let [diffs (st/difference (keys remote-users ) (keys (:users db)))
+  (let [
+        diffs (st/difference (keys remote-users ) (keys (:users db)))
         _ (prn "diffs:  " diffs)
         informed (into {} (for [[k v] remote-users] [k (assoc v :notified true)]))
         logged-out (st/difference (keys (:users db)) (keys remote-users))
         users (into {}  (for [[k v] (db :users) :when (contains? logged-out k)] [k v] ))
         ]
-    (merge (db :users) informed )))
+    (merge informed users)))
 
 (re-frame/reg-event-db
  :update-easyrtc-info
@@ -129,7 +130,7 @@
  (fn  [db [_ easyrtcid]]
    (prn "LoginSuccess: " easyrtcid)
    (-> db
-       (assoc :users [])
+       (assoc :users {})
        (assoc :easyrtcid (.cleanId js/easyrtc easyrtcid))
        )))
 
