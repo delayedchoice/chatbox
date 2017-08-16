@@ -65,6 +65,36 @@
         [:video.callerVideo {:autoPlay "autoplay" :id "callerVideo"}]]]]) )
  )
 
+;(nil {"aAG4rO2B3kXz7Ar3" {"easyrtcid" "aAG4rO2B3kXz7Ar3",
+;                          "roomJoinTime" 1502845797451,
+;			                    "presence" {"show" "chat",
+;			                   						 "status" nil},
+;                          "apiField" {"mediaIds" {"fieldName" "mediaIds",
+;			                   												 "fieldValue" {"default" "{b461c0db-dfbb-9140-85c0-5f91946b0387}"}}}}}
+;      {"2yR0guO57r17dF0e" {"easyrtcid" "2yR0guO57r17dF0e",
+;                          "roomJoinTime" 1502805171085,
+;                          "presence" {"show" "chat", "status" nil},
+;                          "apiField" {"mediaIds" {"fieldName" "mediaIds",
+;                          "fieldValue" {"default" "EdvYjj5BXVFtvRsxslbYrn54WEuUQ7QwZS35"}}}}})
+;adding another
+
+;({"hXarvTuJyfRfNsqV" {"easyrtcid" "hXarvTuJyfRfNsqV",
+;                      "roomJoinTime" 1502846936498,
+;                      "presence" {"show" "chat", "status" nil},
+;                      "apiField" {"mediaIds" {"fieldName" "mediaIds",
+;                                              "fieldValue" {"default" "{bd348d88-a1be-6349-9ac9-841d1bec856b}"}}}}}
+;  nil
+; {"08hFvfI0JdQFdrng" {"easyrtcid" "08hFvfI0JdQFdrng",
+;                      "roomJoinTime" 1502846842854,
+;                      "presence" {"show" "chat", "status" nil},
+;                      "apiField" {"mediaIds" {"fieldName" "mediaIds",
+;                                  "fieldValue" {"default" "{ca9733c6-577f-1748-8dc3-09d8d089b8af}"}}}},
+;  "2yR0guO57r17dF0e" {"easyrtcid" "2yR0guO57r17dF0e",
+;                      "roomJoinTime" 1502805171085,
+;                      "presence" {"show" "chat", "status" nil},
+;                      "apiField" {"mediaIds" {"fieldName" "mediaIds",
+;                                  "fieldValue" {"default" "EdvYjj5BXVFtvRsxslbYrn54WEuUQ7QwZS35"}}}}})
+;
 (defn home-panel []
   (let [pid (rf/subscribe [:peerjs-id])
         user (rf/subscribe [:logged-in-as])]
@@ -74,7 +104,7 @@
             [:div [:label (str "USER: " @user)]]
             [call-button]
             [login-button]
-            [inbox]
+           ; [inbox]
             [demo]]))
 
 (defn main-panel []
