@@ -56,13 +56,14 @@
           ^{:key user}
           [:a.btn.btn-primary.col-md-4
               {:type "button"
-               :on-click #(rf/dispatch [:perform-call user])}
+               :on-click #(rf/dispatch [:perform-call user])
+               :id "otherClients"}
          user]) ] ]
        [:br]
       [:div {:id "videos"}
        [:video.selfVideo.easyrtcMirror {:autoPlay "autoplay" :id "selfVideo" :muted true }]
        [:div.callerDiv
-        [:video.callerVideo {:autoPlay "autoplay" :id "callerVideo"}]]]]) )
+        [:video.callerVideo {:autoPlay "autoplay" :id "caller"}]]]]) )
  )
 
 ;(nil {"aAG4rO2B3kXz7Ar3" {"easyrtcid" "aAG4rO2B3kXz7Ar3",

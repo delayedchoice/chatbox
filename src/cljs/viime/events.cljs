@@ -101,7 +101,8 @@
  :perform-call
  (fn  [db [_ user]]
    (.hangupAll js/easyrtc)
-   (.call js/easyrtc user #() #())))
+   (.call js/easyrtc user #(re-frame/dispatch [:easyrtc-connect-success])
+                          #(re-frame/dispatch [:easyrtc-connect-failure]) )))
 
 (defn update-users [db remote-users]
   (let [diffs (st/difference (set (keys remote-users )) (set (keys (:users db))))
@@ -117,7 +118,8 @@
 (re-frame/reg-event-db
  :update-easyrtc-info
  (fn  [db [_ room-name data primary?]]
-   (let [remote-users (js->clj data)
+   (let [other-client-div (.getElementById js/document "otherClients")
+         remote-users (js->clj data)
          _ (prn "DataUpdate: " remote-users )
          users (update-users db remote-users)]
      (-> db
@@ -141,19 +143,36 @@
   (prn "LoginFailure:  " error-code  ":" message)
    (.showError js/easyrtc error-code message)))
 
+(re-frame/reg-event-db
+ :easyrtc-accept-stream
+ (fn  [db [_ caller-easyrtc-id stream]]
+  (let [video (.getElementById js/document "caller") ]
+    (.setVideoObjectSrc js/easyrtc video stream) )))
+
+(re-frame/reg-event-db
+ :easyrtc-stream-closed
+ (fn  [db [_ caller-easyrtc-id]]
+  (let [video (.getElementById js/document "caller") ]
+    (.setVideoObjectSrc js/easyrtc video "") )))
+
+(re-frame/reg-event-db
+ :media-source-success
+ (fn  [db [_]]
+  (let [self-video (.getElementById js/document "self") ]
+    (.setVideoObjectSrc js/easyrtc self-video (.getLocalStream js/easyrtc))
+    (.connect js/easyrtc "WELSHI_TALKI"
+                        #(re-frame/dispatch [:easyrtc-connect-success])
+                        #(re-frame/dispatch [:easyrtc-connect-failure])) ) ))
 
 (re-frame/reg-event-db
  :initialize-easyrtc
  (fn  [db _]
    (let []
+     (.setStreamAcceptor js/easyrtc #(re-frame/dispatch [:easyrtc-accept-stream %1 %2]))
+     (.setOnStreamClosed js/easyrtc #(re-frame/dispatch [:easyrtc-stream-closed %1]))
      (.setVideoDims js/easyrtc 640 480)
      (.setRoomOccupantListener js/easyrtc #(re-frame/dispatch [:update-easyrtc-info %1 %2 %3]) )
-     (.easyApp js/easyrtc "easyrtc.audioVideoSimple"
-                          "selfVideo"
-                          (clj->js ["callerVideo"])
-                          #(re-frame/dispatch [:login-success  %1])
-                          #(re-frame/dispatch [:login-error %1 %2])
-                         )
+     (.initMediaSource js/easyrtc #(re-frame/dispatch [:media-source-success %1 %2 %3]) #(re-frame/dispatch [:easyrtc-connect-failure]))
     (prn "Initialized EasyRTC")
 		db)))
 
