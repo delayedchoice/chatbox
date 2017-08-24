@@ -61,7 +61,7 @@
          user]) ] ]
        [:br]
       [:div {:id "videos"}
-       [:video.selfVideo.easyrtcMirror {:autoPlay "autoplay" :id "selfVideo" :muted true }]
+       [:video.selfVideo.easyrtcMirror {:autoPlay "autoplay" :id "self" :muted true }]
        [:div.callerDiv
         [:video.callerVideo {:autoPlay "autoplay" :id "caller"}]]]]) )
  )

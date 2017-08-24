@@ -101,7 +101,7 @@
  :perform-call
  (fn  [db [_ user]]
    (.hangupAll js/easyrtc)
-   (.call js/easyrtc user #(re-frame/dispatch [:easyrtc-connect-success])
+   (.call js/easyrtc user #(re-frame/dispatch [:easyrtc-connect-success %1])
                           #(re-frame/dispatch [:easyrtc-connect-failure]) )))
 
 (defn update-users [db remote-users]
@@ -121,7 +121,7 @@
    (let [other-client-div (.getElementById js/document "otherClients")
          remote-users (js->clj data)
          _ (prn "DataUpdate: " remote-users )
-         users (update-users db remote-users)]
+         users remote-users]
      (-> db
         (assoc :users users)
         (assoc :remote-data remote-users)
@@ -136,6 +136,23 @@
        (assoc :users {})
        (assoc :easyrtcid (.cleanId js/easyrtc easyrtcid))
        )))
+(re-frame/reg-event-db
+ :easyrtc-connect-success
+ (fn  [db [_ easyrtcid]]
+   (prn "ConnectSuccess: " easyrtcid)
+   (-> db
+       (assoc :users {})
+       (assoc :easyrtcid (.cleanId js/easyrtc easyrtcid))
+       )))
+(re-frame/reg-event-db
+ :easyrtc-connect-failure
+ (fn  [db [_]]
+   (prn "ConnectFailure: ")
+   (-> db
+       (assoc :users {})
+       )))
+
+
 
 (re-frame/reg-event-db
  :login-failure
@@ -161,7 +178,7 @@
   (let [self-video (.getElementById js/document "self") ]
     (.setVideoObjectSrc js/easyrtc self-video (.getLocalStream js/easyrtc))
     (.connect js/easyrtc "WELSHI_TALKI"
-                        #(re-frame/dispatch [:easyrtc-connect-success])
+                        #(re-frame/dispatch [:easyrtc-connect-success %1])
                         #(re-frame/dispatch [:easyrtc-connect-failure])) ) ))
 
 (re-frame/reg-event-db
