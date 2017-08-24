@@ -1,6 +1,7 @@
 (ns viime.views
   (:require [goog.events :as events]
             [secretary.core :as secretary]
+            [easyrtc.js]
             [clojure.string :as string]
             [reagent.core :as reagent]
             [cljs-time.coerce :as trans]
@@ -24,17 +25,26 @@
                           :value @remote-peer
                           :name "remote-peer-id"}]])))
 (defn login-button []
-  (let [user-id (reagent/atom "")]
+  (let [user-id (reagent/atom "")
+        password (reagent/atom "")]
     (fn []
       [:div.row
-        [:a.btn.btn-primary.col-md-4
-         {:type "button"
-          :on-click #(rf/dispatch [:login @user-id])}
-         "Login"]
+
+       [:div.row
         [:input.col-md-4 {:type "text"
                           :on-change #(reset! user-id (-> % .-target .-value))
                           :value @user-id
-                          :name "login-id"}]])))
+                          :name "login-id"}]]
+       [:div.row
+        [:input.col-md-4 {:type "text"
+                          :on-change #(reset! password (-> % .-target .-value))
+                          :value @password
+                          :name "password"}]]
+       [:div.row
+        [:a.btn.btn-primary.col-md-4
+         {:type "button"
+          :on-click #(rf/dispatch [:login @user-id @password])}
+         "Login"]]])))
 (defn player []
   (fn []
     (let [video (rf/subscribe [:video])]
@@ -58,7 +68,7 @@
               {:type "button"
                :on-click #(rf/dispatch [:perform-call user])
                :id "otherClients"}
-         user]) ] ]
+         (.idToName js/easyrtc user)]) ] ]
        [:br]
       [:div {:id "videos"}
        [:video.selfVideo.easyrtcMirror {:autoPlay "autoplay" :id "self" :muted true }]

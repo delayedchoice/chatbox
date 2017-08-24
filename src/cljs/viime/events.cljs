@@ -17,7 +17,7 @@
 (re-frame/reg-event-db
  :login
  (fn  [db [_ id]]
-   (ws/login id (db :websocket-server))
+  (re-frame/dispatch [:initialize-easyrtc id])
    db))
 
 (re-frame/reg-event-db
@@ -183,8 +183,9 @@
 
 (re-frame/reg-event-db
  :initialize-easyrtc
- (fn  [db _]
+ (fn  [db [_ id]]
    (let []
+     (.setUsername js/easyrtc id)
      (.setStreamAcceptor js/easyrtc #(re-frame/dispatch [:easyrtc-accept-stream %1 %2]))
      (.setOnStreamClosed js/easyrtc #(re-frame/dispatch [:easyrtc-stream-closed %1]))
      (.setVideoDims js/easyrtc 640 480)
