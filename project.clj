@@ -25,7 +25,9 @@
                  [korma "0.4.1"]
                  [com.h2database/h2 "1.3.170"]
                  [overtone/at-at "1.2.0"]
+                 [re-com "2.1.0"]
                  [com.stuartsierra/component "0.3.2"]
+                 [org.clojars.frozenlock/reagent-modals "0.2.3"]
                 ]
 
   :plugins [[lein-cljsbuild "1.1.4"]
