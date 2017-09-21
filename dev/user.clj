@@ -28,10 +28,15 @@
   (alter-var-root #'system
     (constantly (system/system))))
 
-(defn start
+(defn start-dev
   "Starts the current development system."
   []
-;  (figwheel/start-figwheel!)
+  (figwheel/start-figwheel!)
+  (alter-var-root #'system system/start))
+
+(defn start
+  "Starts the current test system."
+  []
   (alter-var-root #'system system/start))
 
 (defn stop
@@ -42,10 +47,16 @@
     (fn [s] (when s (system/stop s)))))
 
 (defn go
-  "Initializes the current development system and starts it running."
+  "Initializes the current test system and starts it running."
   []
   (init)
   (start))
+
+(defn go-dev
+  "Initializes the current development system and starts it running."
+  []
+  (init)
+  (start-dev))
 
 (defn reset []
     (stop)
