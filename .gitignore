@@ -1,5 +1,5 @@
 /*.log
-/*.css
+resources/public/css/site.css
 /target
 /*-init.clj
 /resources/public/js/compiled
