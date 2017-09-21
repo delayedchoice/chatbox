@@ -30,6 +30,12 @@
                  [org.clojars.frozenlock/reagent-modals "0.2.3"]
                 ]
 
+:repl-options {
+             ;; If nREPL takes too long to load it may timeout,
+             ;; increase this to wait longer before timing out.
+             ;; Defaults to 30000 (30 seconds)
+             :timeout 1200000
+             }
   :plugins [[lein-cljsbuild "1.1.4"]
             [lein-ancient        "0.6.10"]
             [lein-less "1.7.5"] ]
@@ -55,7 +61,8 @@
                    [org.clojure/tools.namespace "0.2.11"]
 ;                   [com.stuartsierra/component.repl "0.2.0"]
                    ]
-    :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
+    :repl-options {:timeout 120000
+	           :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
     :plugins      [[cider/cider-nrepl "0.12.0"]
                    [lein-figwheel "0.5.8"]
                    [lein-doo "0.1.7"]]
@@ -96,14 +103,18 @@
     {:id           "min"
      :source-paths ["src/cljs"]
      :compiler     {:main            viime.core
-                    :foreign-libs    [{:file "resources/public/js/recorder.js"
-                                     :provides ["rw"]
-                                     :module-type :commonjs}
-                                     {:file "resources/public/js/recorderWorker.js"
-                                     :provides ["r"]
-                                     :module-type :commonjs}]
-                    :output-to       "resources/public/js/compiled/app.js"
-                    :optimizations   :advanced
+                    :foreign-libs         [{:file "src/easyrtc/socket.io.js"
+                                          ;:file-min "react/react.min.js"
+                                          :provides ["socket.io.js"]},
+                                         {:file "src/easyrtc/easyrtc.js"
+                                          ; :file-min "react/react.min.js"
+                                          :provides ["easyrtc.js"]
+                                          :requires ["socket.io.js"]}
+                                          ]
+                    :asset-path           "js/compiled/out"
+                    :source-map-timestamp true
+                   :output-to       "resources/public/js/compiled/app.js"
+                    :optimizations   :none
                     :closure-defines {goog.DEBUG false}
                     :pretty-print    false}}
 

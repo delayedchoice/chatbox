@@ -96,8 +96,8 @@
 (def route-list
   [{:method :any :src "/msg" :handler post-message-handler }
    {:method :any :src "/msg/:x" :handler get-message-handler }
-	 {:method :post :src "/socket.io/" :handler proxy-request }
-	 {:method :get :src "/socket.io/" :handler proxy-request }
+	 ;{:method :post :src "/socket.io/" :handler proxy-request }
+	 ;{:method :get :src "/socket.io/" :handler proxy-request }
 	 {:method :get :src "/" :handler root-handler }
    ])
 

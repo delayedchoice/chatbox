@@ -31,7 +31,7 @@
 (defn start
   "Starts the current development system."
   []
-  (figwheel/start-figwheel!)
+;  (figwheel/start-figwheel!)
   (alter-var-root #'system system/start))
 
 (defn stop
