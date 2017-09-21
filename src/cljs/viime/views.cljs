@@ -38,8 +38,8 @@
         [:a.btn.btn-primary.col-md-12
          {:type "button"
           :on-click #(do ;(reagent-modals/close-modal!)
-                         (reagent-modals/modal! [videos] {:size :sm})
-                         (reagent-modals/close-modal!)
+                         ;(reagent-modals/modal! [videos] {:size :sm})
+                         ;(reagent-modals/close-modal!)
                          (rf/dispatch [:login @user-id @password]))}
          "Login"]]]))  )
 

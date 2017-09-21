@@ -4,6 +4,7 @@
               [clojure.set :as st]
               [viime.db :as db]
               [viime.rest :as r]
+              [viime.views :as view]
               [viime.websocket-client :as ws]
               [taoensso.sente  :as sente]
               [clojure.data :as data]
@@ -101,7 +102,7 @@
  :perform-call
  (fn  [db [_ user]]
    (.hangupAll js/easyrtc)
-   (.call js/easyrtc user #(re-frame/dispatch [:easyrtc-connect-success %1])
+   (.call js/easyrtc user #(re-frame/dispatch [:easyrtc-call-success %1])
                           #(re-frame/dispatch [:easyrtc-connect-failure]) )))
 
 (defn update-users [db remote-users]
@@ -136,6 +137,13 @@
        (assoc :users {})
        (assoc :easyrtcid (.cleanId js/easyrtc easyrtcid))
        )))
+
+(re-frame/reg-event-db
+ :easyrtc-call-success
+ (fn  [db [_ easyrtcid]]
+   (prn "CallSuccess: " easyrtcid)
+   ))
+
 (re-frame/reg-event-db
  :easyrtc-connect-success
  (fn  [db [_ easyrtcid]]
@@ -163,8 +171,11 @@
 (re-frame/reg-event-db
  :easyrtc-accept-stream
  (fn  [db [_ caller-easyrtc-id stream]]
-  (let [video (.getElementById js/document "caller") ]
-    (.setVideoObjectSrc js/easyrtc video stream) )))
+  (reagent-modals/modal! [views/videos] )
+  (let [self-video (.getElementById js/document "self")
+        caller-video (.getElementById js/document "caller") ]
+    (.setVideoObjectSrc js/easyrtc self-video (.getLocalStream js/easyrtc))
+    (.setVideoObjectSrc js/easyrtc caller-video stream) )))
 
 (re-frame/reg-event-db
  :easyrtc-stream-closed
@@ -173,10 +184,10 @@
     (.setVideoObjectSrc js/easyrtc video "") )))
 
 (re-frame/reg-event-db
- :media-source-success
+ :easyrtc-registrtation-success
  (fn  [db [_]]
   (let [self-video (.getElementById js/document "self") ]
-    (.setVideoObjectSrc js/easyrtc self-video (.getLocalStream js/easyrtc))
+;    (.setVideoObjectSrc js/easyrtc self-video (.getLocalStream js/easyrtc))
     (.connect js/easyrtc "WELSHI_TALKI"
                         #(re-frame/dispatch [:easyrtc-connect-success %1])
                         #(re-frame/dispatch [:easyrtc-connect-failure])) ) ))
@@ -190,7 +201,7 @@
      (.setOnStreamClosed js/easyrtc #(re-frame/dispatch [:easyrtc-stream-closed %1]))
      (.setVideoDims js/easyrtc 640 480)
      (.setRoomOccupantListener js/easyrtc #(re-frame/dispatch [:update-easyrtc-info %1 %2 %3]) )
-     (.initMediaSource js/easyrtc #(re-frame/dispatch [:media-source-success %1 %2 %3]) #(re-frame/dispatch [:easyrtc-connect-failure]))
+     (.initMediaSource js/easyrtc #(re-frame/dispatch [:easyrtc-registrtation-success %1 %2 %3]) #(re-frame/dispatch [:easyrtc-connect-failure]))
     (prn "Initialized EasyRTC")
 		db)))
 
