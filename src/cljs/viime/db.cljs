@@ -15,6 +15,7 @@
    :states {:recording {:key :recording :btn-text "Stop" :fn  #(re-frame/dispatch [:stop-recording])}
             :playing   {:key :playing :btn-text "Stop" :fn  #(re-frame/dispatch [:stop-rocording])}}
    :frames []
+   :current-call nil
    :video  nil
    :styles {:read "read message"
             :unread "unread message"}

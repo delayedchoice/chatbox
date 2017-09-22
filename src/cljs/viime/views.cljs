@@ -14,10 +14,13 @@
 
 (defn videos []
   (fn []
-    [:div {:id "videos"}
-    [:video.selfVideo.easyrtcMirror {:autoPlay "autoplay" :id "self" :muted true }]
-    [:div.callerDiv
-     [:video.callerVideo {:autoPlay "autoplay" :id "caller"}]]]))
+    (let [current-call-id (rf/subscribe [:current-call])
+         _ (prn  "CurrentCaller: " @current-call-id)
+         ]
+     [:div {:id "videos" :class (if (nil? @current-call-id) "hidden" "whatever")}
+      [:video.selfVideo.easyrtcMirror {:autoPlay "autoplay" :id "self" :muted true }]
+      [:div.callerDiv
+       [:video.callerVideo {:autoPlay "autoplay" :id "caller"}]]])))
 
 (defn login []
 (let [user-id (reagent/atom "")
@@ -39,7 +42,7 @@
          {:type "button"
           :on-click #(do ;(reagent-modals/close-modal!)
                          ;(reagent-modals/modal! [videos] {:size :sm})
-                         ;(reagent-modals/close-modal!)
+                         (reagent-modals/close-modal!)
                          (rf/dispatch [:login @user-id @password]))}
          "Login"]]]))  )
 
@@ -64,23 +67,26 @@
 (defn demo []
   (fn []
     (let [data (rf/subscribe [:remote-data])
-          easyrtcid (rf/subscribe [:easyrtcid])]
+          easyrtcid (rf/subscribe [:easyrtcid])
+          ]
      [:div.demoContainer
       [:div.connectControls
        [:div {:id "iam"} @easyrtcid ]
        [:br]
        [:strong "Connected users:"]
-       [:div.otherClients
+       [:div.otherClients {:id "otherClients"}
         (prn  "DATA: " @data)
-        (for [[user value] @data]
-          ^{:key user}
-          [:div.row
-           [:a.btn.btn-primary.col-md-12
-            {:type "button"
-             :on-click #(do (rf/dispatch [:perform-call user])
-                            (reagent-modals/modal! [videos] ))
-             :id "otherClients"}
-            (.idToName js/easyrtc user)]]) ] ]
+        (doall
+          (for [[user value] @data]
+           ^{:key user}
+           [:div.row
+            [:a.btn.btn-primary.col-md-12
+             {:type "button"
+              :on-click #(do (rf/dispatch [:perform-call user])
+                             #_(reagent-modals/modal! [videos] ))
+              }
+             (.idToName js/easyrtc user)]
+            ])) ] ]
        [:br]
       ]) ))
 
@@ -91,8 +97,9 @@
       [:div [nav-bar]
 ;            [:div [:label (str "PID: " @pid)] ]
 ;            [:div [:label (str "USER: " @user)]]
-            [reagent-modals/modal-window]
-            [demo]]))
+[reagent-modals/modal-window]
+            [demo]
+            [videos]]))
 
 (defn main-panel []
   (fn []

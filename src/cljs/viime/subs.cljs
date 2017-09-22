@@ -13,6 +13,12 @@
    (:remote-data db)))
 
 (re-frame/reg-sub
+ :current-call
+ (fn [db]
+   (:current-call db)))
+
+
+(re-frame/reg-sub
  :easyrtcid
  (fn [db]
    (:easyrtcid db)))

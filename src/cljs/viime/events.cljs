@@ -4,7 +4,8 @@
               [clojure.set :as st]
               [viime.db :as db]
               [viime.rest :as r]
-              [viime.views :as view]
+              [reagent-modals.modals :as reagent-modals]
+              [viime.views :as views]
               [viime.websocket-client :as ws]
               [taoensso.sente  :as sente]
               [clojure.data :as data]
@@ -142,7 +143,7 @@
  :easyrtc-call-success
  (fn  [db [_ easyrtcid]]
    (prn "CallSuccess: " easyrtcid)
-   ))
+  db ))
 
 (re-frame/reg-event-db
  :easyrtc-connect-success
@@ -166,22 +167,41 @@
  :login-failure
  (fn  [db [_ error-code message]]
   (prn "LoginFailure:  " error-code  ":" message)
-   (.showError js/easyrtc error-code message)))
+   (.showError js/easyrtc error-code message)
+   db))
 
 (re-frame/reg-event-db
  :easyrtc-accept-stream
  (fn  [db [_ caller-easyrtc-id stream]]
-  (reagent-modals/modal! [views/videos] )
+
+  (re-frame/dispatch [:easyrtc-accept-stream2 caller-easyrtc-id stream ])
+  (assoc db :current-call caller-easyrtc-id)
+;  (reagent-modals/modal! [views/videos] )
+  ))
+
+(re-frame/reg-event-db
+ :easyrtc-accept-stream2
+ (fn  [db [_ caller-easyrtc-id stream]]
   (let [self-video (.getElementById js/document "self")
         caller-video (.getElementById js/document "caller") ]
+(prn "TESTING ACCEPT STREAM2")
     (.setVideoObjectSrc js/easyrtc self-video (.getLocalStream js/easyrtc))
-    (.setVideoObjectSrc js/easyrtc caller-video stream) )))
+    (.setVideoObjectSrc js/easyrtc caller-video stream) )
+  db))
 
 (re-frame/reg-event-db
  :easyrtc-stream-closed
  (fn  [db [_ caller-easyrtc-id]]
   (let [video (.getElementById js/document "caller") ]
-    (.setVideoObjectSrc js/easyrtc video "") )))
+    (.setVideoObjectSrc js/easyrtc video "") )
+  db))
+
+(re-frame/reg-event-db
+ :open-login-modal
+ (fn  [db _]
+  (reagent-modals/modal! [views/login] {:size :sm})
+  db))
+
 
 (re-frame/reg-event-db
  :easyrtc-registrtation-success
@@ -190,7 +210,8 @@
 ;    (.setVideoObjectSrc js/easyrtc self-video (.getLocalStream js/easyrtc))
     (.connect js/easyrtc "WELSHI_TALKI"
                         #(re-frame/dispatch [:easyrtc-connect-success %1])
-                        #(re-frame/dispatch [:easyrtc-connect-failure])) ) ))
+                        #(re-frame/dispatch [:easyrtc-connect-failure])) )
+  db))
 
 (re-frame/reg-event-db
  :initialize-easyrtc
