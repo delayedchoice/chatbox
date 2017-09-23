@@ -2,7 +2,6 @@
     (:require [reagent.core :as reagent]
               [re-frame.core :as re-frame]
               [viime.events]
-							[viime.websocket-client]
               [viime.subs]
               [viime.routes :as routes]
               [viime.views :as views]
