@@ -61,7 +61,10 @@
     [:ul.nav.navbar-nav
      [:li.active [:a {:href "#"} "About"]] ]
     [:ul.nav.navbar-nav.navbar-right
-     [:li [:a {:on-click #(do (reagent-modals/modal! [login] {:size :sm}))}
+     [:li [:a {:on-click #(reagent-modals/modal!
+                            [login]
+                            {:size :sm
+                             :shown (fn [] (.focus (.getElementById js/document "login-id")))})}
            [:span.glyphicon.glyphicon-log-in]
            "Login"]]]]]])
 
