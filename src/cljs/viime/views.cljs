@@ -2,10 +2,7 @@
   (:require [goog.events :as events]
             [secretary.core :as secretary]
             [easyrtc.js]
-            [clojure.string :as string]
             [reagent.core :as reagent]
-            [cljs-time.coerce :as trans]
-            [cljs-time.core :as date]
             [reagent-modals.modals :as reagent-modals]
             [re-frame.core :as rf]
             )
@@ -24,27 +21,31 @@
 
 (defn login []
 (let [user-id (reagent/atom "")
-      password (reagent/atom "")]
+      password (reagent/atom "")
+     ]
     (fn []
-      [:div.modal-container
+      [:div.modal-container {:id "login" }
        [:div.row.center-block
         [:input.col-md-12.col-centered {:type "text"
-                          :on-change #(reset! user-id (-> % .-target .-value))
-                          :value @user-id
-                          :name "login-id"}]]
+                                        :on-change #(reset! user-id (-> % .-target .-value))
+                                        :placeholder "Username"
+                                        :on-key-press #(if (= 13 (.-charCode %))
+                                         (do (reagent-modals/close-modal!)
+                                             (rf/dispatch [:login @user-id @password])))
+                                        :auto-focus true
+                                         :value @user-id
+                                         :id "login-id"
+                                        :name "login-id"}]]
        [:div.row.center-block
         [:input.col-md-12 {:type "text"
                           :on-change #(reset! password (-> % .-target .-value))
-                          :value @password
+                          :placeholder "Password"
+					                :on-key-press #(if (= 13 (.-charCode %))
+                           (do (reagent-modals/close-modal!)
+                         			 (rf/dispatch [:login @user-id @password])))
+                            :value @password
                           :name "password"}]]
-       [:div.row.center-block
-        [:a.btn.btn-primary.col-md-12
-         {:type "button"
-          :on-click #(do ;(reagent-modals/close-modal!)
-                         ;(reagent-modals/modal! [videos] {:size :sm})
-                         (reagent-modals/close-modal!)
-                         (rf/dispatch [:login @user-id @password]))}
-         "Login"]]]))  )
+       ]))  )
 
 (defn nav-bar []
  [:nav.navbar.navbar-custom
@@ -60,7 +61,7 @@
     [:ul.nav.navbar-nav
      [:li.active [:a {:href "#"} "About"]] ]
     [:ul.nav.navbar-nav.navbar-right
-     [:li [:a {:on-click #(reagent-modals/modal! [login] {:size :sm})}
+     [:li [:a {:on-click #(do (reagent-modals/modal! [login] {:size :sm}))}
            [:span.glyphicon.glyphicon-log-in]
            "Login"]]]]]])
 

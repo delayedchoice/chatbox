@@ -22,8 +22,5 @@
 (defn ^:export init []
   (routes/app-routes)
   (re-frame/dispatch-sync [:initialize-db])
-  ;(re-frame/dispatch [:initialize-video])
-  ;(re-frame/dispatch [:initialize-sente])
-  ;(re-frame/dispatch [:initialize-easyrtc])
   (dev-setup)
   (mount-root))
