@@ -13,6 +13,12 @@
    (:remote-data db)))
 
 (re-frame/reg-sub
+ :show-loader
+ (fn [db]
+   (:show-loader db)))
+
+
+(re-frame/reg-sub
  :current-call
  (fn [db]
    (:current-call db)))

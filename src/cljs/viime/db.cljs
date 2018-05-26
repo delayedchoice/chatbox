@@ -4,6 +4,9 @@
 (def start-state {:key :recording :btn-text "Record" :name :recording :fn  #(re-frame/dispatch [:start-recording])} )
 (def default-db
   {:name "re-frame"
+   :user-name nil
+   :password nil
+   :show-loader false
    :easyrtcid "Nobody"
    :remote-data {}
    :logged-in-as "Nobody"

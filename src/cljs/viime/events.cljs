@@ -10,9 +10,19 @@
 
 (re-frame/reg-event-db
  :login
- (fn  [db [_ id]]
-  (re-frame/dispatch [:initialize-easyrtc id])
-   db))
+ (fn  [db [_ user-name password]]
+  (-> db
+      (assoc :user-name user-name)
+      (assoc :passwork password)
+      )))
+
+(re-frame/reg-event-db
+ :do-login
+ (fn  [db [_ _]]
+   (prn "DO LOGIN")
+  (re-frame/dispatch [:initialize-easyrtc (db :user-name)])
+  (assoc db :show-loader true)))
+
 
 (re-frame/reg-event-db
  :perform-call
@@ -39,6 +49,7 @@
  (fn  [db [_ easyrtcid]]
    (prn "LoginSuccess: " easyrtcid)
    (-> db
+       (assoc :show-loader false)
        (assoc :users {})
        (assoc :easyrtcid (.cleanId js/easyrtc easyrtcid))
        )))
@@ -47,15 +58,16 @@
  :easyrtc-call-success
  (fn  [db [_ easyrtcid]]
    (prn "CallSuccess: " easyrtcid)
-  db ))
+  (assoc db :show-loader false) ))
 
 (re-frame/reg-event-db
  :easyrtc-connect-success
  (fn  [db [_ easyrtcid]]
    (prn "ConnectSuccess: " easyrtcid)
    (-> db
-       (assoc :users {})
-       (assoc :easyrtcid (.cleanId js/easyrtc easyrtcid))
+        (assoc :show-loader false)
+        (assoc :users {})
+        (assoc :easyrtcid (.cleanId js/easyrtc easyrtcid))
        )))
 
 (re-frame/reg-event-db
@@ -63,7 +75,9 @@
  (fn  [db [_]]
    (prn "ConnectFailure: ")
    (-> db
-       (assoc :users {})
+      (assoc :show-loader false)
+      (assoc :users {})
+      (assoc :users {})
        )))
 
 (re-frame/reg-event-db
@@ -71,13 +85,19 @@
  (fn  [db [_ error-code message]]
   (prn "LoginFailure:  " error-code  ":" message)
    (.showError js/easyrtc error-code message)
-   db))
+   (assoc db :show-loader false)))
 
 (re-frame/reg-event-db
  :easyrtc-accept-stream
  (fn  [db [_ caller-easyrtc-id stream]]
   (re-frame/dispatch [:easyrtc-accept-stream2 caller-easyrtc-id stream ])
   (assoc db :current-call caller-easyrtc-id)
+  ))
+
+(re-frame/reg-event-db
+ :set-loader-visible
+ (fn  [db [_ show-loader?]]
+  (assoc db :show-loader show-loader?)
   ))
 
 (re-frame/reg-event-db

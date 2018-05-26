@@ -9,43 +9,45 @@
   (:import [goog History]
            [goog.history EventType]))
 
+(defn loader []
+  (let [show-loader (rf/subscribe [:show-loader])]
+    [:div {:class (if @show-loader "loader" "")}]))
+
+
 (defn videos []
   (fn []
     (let [current-call-id (rf/subscribe [:current-call])
-         _ (prn  "CurrentCaller: " @current-call-id)
-         ]
-     [:div {:id "videos" :class (if (nil? @current-call-id) "hidden" "whatever")}
+          _ (prn  "CurrentCaller: " @current-call-id) ]
+     [:div {:id "videos" :class (if (nil? @current-call-id) "hidden" "")}
       [:video.selfVideo.easyrtcMirror {:autoPlay "autoplay" :id "self" :muted true }]
-      [:div.callerDiv
-       [:video.callerVideo {:autoPlay "autoplay" :id "caller"}]]])))
+      [:video.callerVideo.callerDiv  {:autoPlay "autoplay" :id "caller"}]])))
 
 (defn login []
-(let [user-id (reagent/atom "")
-      password (reagent/atom "")
-     ]
-    (fn []
-      [:div.modal-container {:id "login" }
-       [:div.row.center-block
-        [:input.col-md-12.col-centered {:type "text"
-                                        :on-change #(reset! user-id (-> % .-target .-value))
-                                        :placeholder "Username"
-                                        :on-key-press #(if (= 13 (.-charCode %))
-                                         (do (reagent-modals/close-modal!)
-                                             (rf/dispatch [:login @user-id @password])))
-                                        :auto-focus true
-                                         :value @user-id
-                                         :id "login-id"
-                                        :name "login-id"}]]
-       [:div.row.center-block
-        [:input.col-md-12 {:type "text"
-                          :on-change #(reset! password (-> % .-target .-value))
-                          :placeholder "Password"
-					                :on-key-press #(if (= 13 (.-charCode %))
-                           (do (reagent-modals/close-modal!)
-                         			 (rf/dispatch [:login @user-id @password])))
-                            :value @password
-                          :name "password"}]]
-       ]))  )
+  (let [show-loader (rf/subscribe [:show-loader])
+				user-id (reagent/atom "")
+        password (reagent/atom "") ]
+      (fn []
+        [:div {:id "login"
+							 :class (if @show-loader "loader" "")
+               :on-key-press #(if (= 13 (.-charCode %))
+                                  (do
+                                      (rf/dispatch [:login @user-id @password])
+                                      (reagent-modals/close-modal!)))}
+ ;       [loader]
+         [:div.row.center-block
+          [:input.col-md-12.col-centered {:type "text"
+                                          :on-change #(reset! user-id (-> % .-target .-value))
+																				  :class (if @show-loader "hide" "")
+                                          :placeholder "Username"
+                                          :value @user-id
+                                          :id "login-id" }]]
+         [:div.row.center-block
+          [:input.col-md-12 {:type "text"
+                             :on-change #(reset! password (-> % .-target .-value))
+														 :class (if @show-loader "hide" "")
+                             :placeholder "Password"
+                             :value @password
+                             :id "password"}]]])))
 
 (defn nav-bar []
  [:nav.navbar.navbar-custom
@@ -64,15 +66,16 @@
      [:li [:a {:on-click #(reagent-modals/modal!
                             [login]
                             {:size :sm
-                             :shown (fn [] (.focus (.getElementById js/document "login-id")))})}
+                             :hide (fn [] (rf/dispatch [:do-login]))
+                             :shown (fn [] (.focus (.getElementById js/document "login-id")))
+                             })}
            [:span.glyphicon.glyphicon-log-in]
            "Login"]]]]]])
 
-(defn demo []
+(defn availiable-users []
   (fn []
     (let [data (rf/subscribe [:remote-data])
-          easyrtcid (rf/subscribe [:easyrtcid])
-          ]
+          easyrtcid (rf/subscribe [:easyrtcid]) ]
      [:div.demoContainer
       [:div.connectControls
        [:div {:id "iam"} @easyrtcid ]
@@ -86,8 +89,7 @@
            [:div.row
             [:a.btn.btn-primary.col-md-12
              {:type "button"
-              :on-click #(do (rf/dispatch [:perform-call user])
-                             #_(reagent-modals/modal! [videos] ))
+              :on-click #(do (rf/dispatch [:perform-call user]))
               }
              (.idToName js/easyrtc user)]
             ])) ] ]
@@ -99,10 +101,8 @@
         user (rf/subscribe [:logged-in-as])]
       [:title "SSi"]
       [:div [nav-bar]
-;            [:div [:label (str "PID: " @pid)] ]
-;            [:div [:label (str "USER: " @user)]]
-[reagent-modals/modal-window]
-            [demo]
+            [reagent-modals/modal-window]
+            [availiable-users]
             [videos]]))
 
 (defn main-panel []
