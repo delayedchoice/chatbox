@@ -1,30 +1,3 @@
-(start-figwheel!)
-exit
-(-main)
-j
-(-main)
-exit
-(-main)
-exit
-(-main)
-exit
-(use 'figwheel-sidecar.repl-api)
-(start-figwheel!)
-(use 'figwheel-sidecar.repl-api)
-(start-figwheel!)
-exit
-(use 'figwheel-sidecar.repl-api)
-(start-figwheel!)
-exit
-(use 'figwheel-sidecar.repl-api)
-(start-figwheel!)
-exit
-(use 'figwheel-sidecar.repl-api)
-(start-figwheel!)
-exit
-(use 'figwheel-sidecar.repl-api)
-(start-figwheel!)
-exit
 (use 'figwheel-sidecar.repl-api)
 (start-figwheel!)
 <<<<<<< Updated upstream
@@ -498,3 +471,30 @@ exit
 (user/go-dev)
 exit
 (user/go-dev)
+exit
+(user/go)
+exit
+(user/go-dev)
+exit
+(user/go-dev)
+exit
+(user/go-dev)
+exit
+(user/go-dev)
+exit
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+exit
+(user/go)
+6
+exit
+(user/go)
+exit
+(user/go)
+exit
+(user/go)

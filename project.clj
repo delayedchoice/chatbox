@@ -1,8 +1,8 @@
 (defproject viime "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.229"]
-                 ;[reagent "0.6.0"]
-								 [liberator "0.14.1"]
+                  ;[reagent "0.6.0"]
+                 [liberator "0.14.1"]
                  [com.andrewmcveigh/cljs-time "0.4.0"]
                  [cljs-ajax "0.5.8"]
                  [re-frame "0.10.1"]
@@ -29,16 +29,13 @@
                  [org.clojars.frozenlock/reagent-modals "0.2.3"]
                 ]
 
-:repl-options {
-             ;; If nREPL takes too long to load it may timeout,
-             ;; increase this to wait longer before timing out.
-             ;; Defaults to 30000 (30 seconds)
-             :timeout 1200000
-             }
-  :plugins [[lein-cljsbuild "1.1.4"]
+  :repl-options { :timeout 1200000 }
+  :plugins [[lein-ring "0.12.4"]
+            [lein-cljsbuild "1.1.4"]
             [lein-ancient        "0.6.10"]
             [lein-less "1.7.5"] ]
 
+  :ring {:handler viime.handler/dev-handler}
   :min-lein-version "2.5.3"
 
   :source-paths ["src/clj" "test/clj"]
@@ -46,7 +43,8 @@
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"
                                     "test/js"]
 
-  :figwheel {:css-dirs ["resources/public/css"]
+  :figwheel {:server-ip "100.115.92.206"
+             :css-dirs ["resources/public/css"]
              :ring-handler viime.handler/dev-handler }
 
   :less {:source-paths ["less"]
@@ -61,7 +59,7 @@
 ;                   [com.stuartsierra/component.repl "0.2.0"]
                    ]
     :repl-options {:timeout 120000
-	           :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
+    :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
     :plugins      [[cider/cider-nrepl "0.12.0"]
                    [lein-figwheel "0.5.8"]
                    [lein-doo "0.1.7"]]
@@ -72,24 +70,13 @@
   {:builds
    [{:id           "dev"
      :source-paths ["src/cljs"]
-     :figwheel     {:on-jsload "viime.core/mount-root"}
+     :figwheel     {:websocket-host "100.115.92.206"
+                    :on-jsload "viime.core/mount-root"}
      :compiler     {:main                 viime.core
-                    :foreign-libs         [{:file "resources/public/js/recorder.js"
-                                          :provides ["r"]
-                                          ;:module-type :commonjs
-                                          }
-                                          {:file "resources/public/js/recorderWorker.js"
-                                          :provides ["rw"]
-                                          ;:module-type :commonjs
-                                          }
-                                          ,
-                                         {:file "src/easyrtc/socket.io.js"
-                                          ;:file-min "react/react.min.js"
-                                          :provides ["socket.io.js"]},
-                                         {:file "src/easyrtc/easyrtc.js"
-                                          ; :file-min "react/react.min.js"
-                                          :provides ["easyrtc.js"]
-                                          :requires ["socket.io.js"]}
+                    :foreign-libs         [{:file "src/easyrtc/socket.io.js" :provides ["socket.io.js"]},
+                                           {:file "src/easyrtc/easyrtc.js" 
+                                            :provides ["easyrtc.js"] 
+                                            :requires ["socket.io.js"]}
                                           ]
                     :output-to            "resources/public/js/compiled/app.js"
                     :output-dir           "resources/public/js/compiled/out"
@@ -99,7 +86,21 @@
                     :external-config      {:devtools/config {:features-to-install :all}}
                     }}
 
-    {:id           "min"
+  {:id           "min"
+     :source-paths ["src/cljs"]
+     :compiler     {:main                 viime.core
+                    :foreign-libs         [{:file "src/easyrtc/socket.io.js"
+                                            :provides ["socket.io.js"]},
+                                           {:file "src/easyrtc/easyrtc.js"
+                                            :provides ["easyrtc.js"]
+                                            :requires ["socket.io.js"]}
+                                          ]
+                    :output-to            "resources/public/js/compiled/app.js"
+                    :output-dir           "resources/public/js/compiled/out-min"
+                    :asset-path           "js/compiled/out-min"
+                    :source-map-timestamp true
+                    }}
+   #_{:id           "min"
      :source-paths ["src/cljs"]
      :compiler     {:main            viime.core
                     :foreign-libs         [{:file "src/easyrtc/socket.io.js"
@@ -117,7 +118,7 @@
                     :closure-defines {goog.DEBUG false}
                     :pretty-print    false}}
 
-    {:id           "test"
+   #_{:id           "test"
      :source-paths ["src/cljs" "test/cljs"]
      :compiler     {:main          viime.runner
                     :output-to     "resources/public/js/compiled/test.js"
@@ -131,11 +132,6 @@
                      :optimizations :none}}
     ]}
   :main viime.server
-
   :aot [clojure.tools.logging.impl viime.server]
-
   :uberjar-name "viime.jar"
-
-  :prep-tasks [#_["cljsbuild" "once" "min"] "compile"]
-
-  )
+  :prep-tasks [["cljsbuild" "once" "min"] #_"compile"])

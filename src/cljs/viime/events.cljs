@@ -121,7 +121,7 @@
  :easyrtc-registrtation-success
  (fn  [db [_]]
   (let [self-video (.getElementById js/document "self") ]
-    (.connect js/easyrtc "WELSHI_TALKI"
+    (.connect js/easyrtc "default"
                         #(re-frame/dispatch [:easyrtc-connect-success %1])
                         #(re-frame/dispatch [:easyrtc-connect-failure])) )
   db))
@@ -135,6 +135,7 @@
      (.setOnStreamClosed js/easyrtc #(re-frame/dispatch [:easyrtc-stream-closed %1]))
      (.setVideoDims js/easyrtc 640 480)
      (.setRoomOccupantListener js/easyrtc #(re-frame/dispatch [:update-easyrtc-info %1 %2 %3]) )
-     (.initMediaSource js/easyrtc #(re-frame/dispatch [:easyrtc-registrtation-success %1 %2 %3]) #(re-frame/dispatch [:easyrtc-connect-failure]))
+     (.initMediaSource js/easyrtc #(re-frame/dispatch [:easyrtc-registrtation-success %1 %2 %3]) 
+                                  #(re-frame/dispatch [:easyrtc-connect-failure]))
     (prn "Initialized EasyRTC")
 		db)))

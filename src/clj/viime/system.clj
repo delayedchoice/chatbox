@@ -31,7 +31,7 @@
         ws-ring-routes (ws/create-ring-routes! websocket-server logged-in-users)
         ;webserver (ws/start-web-server! websocket-server 3450)
         _ (base-handler/reset-routes ws-ring-routes)
-        webserver (http-kit/run-server #'base-handler/synthetic-routes {:port 3000})
+        webserver (http-kit/run-server #'base-handler/dev-handler {:port 3000})
         router (ws/start-router websocket-server)
         ds (db/new-db in-mem-data-store)
         _  (db/start ds)]
