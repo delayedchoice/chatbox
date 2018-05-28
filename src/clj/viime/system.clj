@@ -10,7 +10,8 @@
             [taoensso.sente     :as sente]
             [taoensso.encore    :as encore :refer (have have?)]
             [org.httpkit.server :as http-kit]
-            ))
+             )
+  (:gen-class))
 
 (timbre/set-level! :info) ; Uncomment for more logging
 (reset! sente/debug-mode?_ true) ;
@@ -61,3 +62,8 @@
        (ws/stop-web-server! (:webserver system) )
        (db/close-db (:db system))
        {})
+
+(defn -main [& args]
+   (let [port 3000 #_(Integer/parseInt (or (env :port) "3000"))
+         sys (system)]
+     (start sys)))

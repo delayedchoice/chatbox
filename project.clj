@@ -131,7 +131,7 @@
                      :output-dir    "resources/public/js/compiled/test/out"
                      :optimizations :none}}
     ]}
-  :main viime.server
-  :aot [clojure.tools.logging.impl viime.server]
+  :main viime.system
+  :aot [clojure.tools.logging.impl viime.system]
   :uberjar-name "viime.jar"
-  :prep-tasks [["cljsbuild" "once" "min"] #_"compile"])
+  :prep-tasks [["cljsbuild" "once" "min"] "compile"])
