@@ -5,6 +5,7 @@
             [reagent.core :as reagent]
             [reagent-modals.modals :as reagent-modals]
             [re-frame.core :as rf]
+            [viime.auth0 :as auth0]
             )
   (:import [goog History]
            [goog.history EventType]))
@@ -13,6 +14,14 @@
   (let [show-loader (rf/subscribe [:show-loader])]
     [:div {:class (if @show-loader "loader" "")}]))
 
+(defn button [text on-click]
+  [:button
+   {:type     "button"
+    :on-click on-click}
+   text])
+
+(defn login-button []
+  (fn [] (button "Log in" #(.show auth0/lock))))
 
 (defn videos []
   (fn []
@@ -24,11 +33,11 @@
 
 (defn login []
   (let [show-loader (rf/subscribe [:show-loader])
-				user-id (reagent/atom "")
+        user-id (reagent/atom "")
         password (reagent/atom "") ]
       (fn []
-        [:div {:id "login"
-							 :class (if @show-loader "loader" "")
+        [:div {:id "login" 
+               :class (if @show-loader "loader" "")
                :on-key-press #(if (= 13 (.-charCode %))
                                   (do
                                       (rf/dispatch [:login @user-id @password])
@@ -37,14 +46,14 @@
          [:div.row.center-block
           [:input.col-md-12.col-centered {:type "text"
                                           :on-change #(reset! user-id (-> % .-target .-value))
-																				  :class (if @show-loader "hide" "")
+                                          :class (if @show-loader "hide" "")
                                           :placeholder "Username"
                                           :value @user-id
                                           :id "login-id" }]]
          [:div.row.center-block
           [:input.col-md-12 {:type "text"
                              :on-change #(reset! password (-> % .-target .-value))
-														 :class (if @show-loader "hide" "")
+                             :class (if @show-loader "hide" "")
                              :placeholder "Password"
                              :value @password
                              :id "password"}]]])))
@@ -103,7 +112,9 @@
       [:div [nav-bar]
             [reagent-modals/modal-window]
             [availiable-users]
-            [videos]]))
+            [login-button]
+            [videos]
+            ]))
 
 (defn main-panel []
   (fn []

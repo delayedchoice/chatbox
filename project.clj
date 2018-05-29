@@ -27,6 +27,7 @@
                  [overtone/at-at "1.2.0"]
                  [com.stuartsierra/component "0.3.2"]
                  [org.clojars.frozenlock/reagent-modals "0.2.3"]
+                 [cljsjs/auth0-lock "11.5.2-0"]
                 ]
 
   :repl-options { :timeout 1200000 }
