@@ -3,6 +3,7 @@
               [re-frame.core :as re-frame]
               [viime.events]
               [viime.subs]
+              [viime.auth0]
               [viime.routes :as routes]
               [viime.views :as views]
               [viime.config :as config]))

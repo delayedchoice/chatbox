@@ -4,6 +4,8 @@ resources/public/css/site.css
 /*-init.clj
 /resources/public/js/compiled
 out
+nashorn_code_cache/
+.cljs_nashorn_repl/
 .cljs_rhino_repl/
 .DS_Store
 .nrepl-port

@@ -13,7 +13,7 @@
  (fn  [db [_ user-name password]]
   (-> db
       (assoc :user-name user-name)
-      (assoc :passwork password)
+      (assoc :password password)
       )))
 
 (re-frame/reg-event-db
@@ -27,9 +27,10 @@
 (re-frame/reg-event-db
  :perform-call
  (fn  [db [_ user]]
-   (.hangupAll js/easyrtc)
-   (.call js/easyrtc user #(re-frame/dispatch [:easyrtc-call-success %1])
-                          #(re-frame/dispatch [:easyrtc-connect-failure]) )))
+   (let [_ (prn "PerformCall: ")]
+    (.hangupAll js/easyrtc)
+    (.call js/easyrtc user #(re-frame/dispatch [:easyrtc-call-success %1])
+                           #(re-frame/dispatch [:easyrtc-connect-failure %1]) ))))
 
 (re-frame/reg-event-db
  :update-easyrtc-info
@@ -72,8 +73,8 @@
 
 (re-frame/reg-event-db
  :easyrtc-connect-failure
- (fn  [db [_]]
-   (prn "ConnectFailure: ")
+ (fn  [db [args]]
+   (prn "ConnectFailure: " args)
    (-> db
       (assoc :show-loader false)
       (assoc :users {})
@@ -120,22 +121,28 @@
 (re-frame/reg-event-db
  :easyrtc-registrtation-success
  (fn  [db [_]]
-  (let [self-video (.getElementById js/document "self") ]
+  (let [self-video (.getElementById js/document "self")
+        _ (prn "Connecting: ") ]
     (.connect js/easyrtc "default"
                         #(re-frame/dispatch [:easyrtc-connect-success %1])
-                        #(re-frame/dispatch [:easyrtc-connect-failure])) )
+                        #(re-frame/dispatch [:easyrtc-connect-failure %1])) )
   db))
 
 (re-frame/reg-event-db
  :initialize-easyrtc
- (fn  [db [_ id]]
-   (let []
-     (.setUsername js/easyrtc id)
+ (fn  [db [_ user]]
+   (let [_ (prn "cred: " (get-in user [:auth-result :accessToken]))]
+     (.setUsername js/easyrtc (get-in user [:profile :email]))
+     (.setCredential js/easyrtc (clj->js {:token (get-in user [:auth-result :accessToken])}))
      (.setStreamAcceptor js/easyrtc #(re-frame/dispatch [:easyrtc-accept-stream %1 %2]))
      (.setOnStreamClosed js/easyrtc #(re-frame/dispatch [:easyrtc-stream-closed %1]))
      (.setVideoDims js/easyrtc 640 480)
      (.setRoomOccupantListener js/easyrtc #(re-frame/dispatch [:update-easyrtc-info %1 %2 %3]) )
-     (.initMediaSource js/easyrtc #(re-frame/dispatch [:easyrtc-registrtation-success %1 %2 %3]) 
-                                  #(re-frame/dispatch [:easyrtc-connect-failure]))
-    (prn "Initialized EasyRTC")
+     (if ^boolean js/goog.DEBUG 
+       (.connect js/easyrtc "default"
+                 #(re-frame/dispatch [:easyrtc-connect-success %1])
+                 #(re-frame/dispatch [:easyrtc-connect-failure %1]))
+       (.initMediaSource js/easyrtc #(re-frame/dispatch [:easyrtc-registrtation-success %1 %2 %3]) 
+                         #(re-frame/dispatch [:easyrtc-connect-failure])) )
+    (prn "initialized easyrtc")
 		db)))

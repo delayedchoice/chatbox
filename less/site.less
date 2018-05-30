@@ -55,10 +55,6 @@ SPAN.textbox INPUT
 }
 
 
-.video-container {
-  text-align: center;
-}
-
 .centered-button {
   width: 30%;
   left: 50%;
@@ -149,19 +145,29 @@ footer {
   overflow-y:scroll;
 }
 
+.video-container {
+}
+
+
 video.selfVideo {
-  height:225px;
-  width:300px;
+  position: absolute;
+  height:115px;
+  width:150px;
   float:left;
   border:1px solid gray;
   margin-left:10px;
+  z-index: 9999; 
+  top:  278px;
+  left: 715px;
 }
 
 video.callerVideo {
-  height:225px;
-  width:300px;
+  position: absolute;
+  height:450;
+  width:600px;
   border:1px solid gray;
   margin-left:10px;
+  z-index: 1; 
 }
 
 .callerDiv
