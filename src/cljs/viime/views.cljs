@@ -5,33 +5,25 @@
             [reagent.core :as reagent]
             [reagent-modals.modals :as reagent-modals]
             [re-frame.core :as rf]
+            [viime.modal :as modal]
             [viime.auth0 :as auth0]
             )
   (:import [goog History]
            [goog.history EventType]))
 
-;(defn loader []
-;  (let [show-loader (rf/subscribe [:show-loader])]
-;    [:div {:class (if @show-loader "loader" "")}]))
-
-;(defn button [text on-click]
-;  [:button
-;   {:type     "button"
-;    :on-click on-click}
-;   text])
-;
-;(defn login-button []
-;  (fn [] (button "Log in" #(.show auth0/lock (clj->js {:autoclose true})))))
-
-(defn videos []
-  (fn []
-    (let [current-call-id (rf/subscribe [:current-call])
-          _ (prn  "CurrentCaller: " @current-call-id) ]
-     [:div.video-container {:id "videos" #_(if (nil? @current-call-id) "hidden" "")}
-      [:video.selfVideo.easyrtcMirror {:autoPlay "autoplay" :id "self" :muted true }]
-      [:video.callerVideo.callerDiv  {:autoPlay "autoplay" :id "caller"}]])))
-
-
+;(defn my-awesome-modal-fn []
+; [:button
+;  {:title "Click to show modal!"
+;   :on-click #(rf/dispatch [:modal {:show? true
+;                                 :child [modal/hello]
+;                                 :size :small}])} "Show me the modal!"])
+;(defn videos []
+;  (fn []
+;    (let [current-call-id (rf/subscribe [:current-call])
+;          _ (prn  "CurrentCaller: " @current-call-id) ]
+;     [:div.video-container {:id "videos" #_(if (nil? @current-call-id) "hidden" "")}
+;      [:video.selfVideo.easyrtcMirror {:autoPlay "autoplay" :id "self" :muted true }]
+;      [:video.callerVideo.callerDiv  {:autoPlay "autoplay" :id "caller"}]])))
 
 (defn nav-bar []
  [:nav.navbar.navbar-custom
@@ -77,14 +69,19 @@
        [:br]
       ]) ))
 
+
+
+
 (defn home-panel []
   (let [pid (rf/subscribe [:peerjs-id])
         user (rf/subscribe [:logged-in-as])]
       [:title "SSi"]
       [:div [nav-bar]
-            [reagent-modals/modal-window]
+            ;[reagent-modals/modal-window]
+            [modal/modal]
             [availiable-users]
-            [videos]
+;            [my-awesome-modal-fn]
+  ;          [videos]
             ]))
 
 (defn main-panel []

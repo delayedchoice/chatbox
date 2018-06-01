@@ -1,7 +1,13 @@
 (ns viime.events
     (:require [re-frame.core :as re-frame]
               [viime.db :as db]
+              [viime.modal :as modal]
               [easyrtc.js]))
+
+(re-frame/reg-event-db
+ :modal
+ (fn [db [_ data]]
+   (assoc-in db [:modal] data)))
 
 (re-frame/reg-event-db
  :initialize-db
@@ -92,7 +98,10 @@
  :easyrtc-accept-stream
  (fn  [db [_ caller-easyrtc-id stream]]
   (re-frame/dispatch [:easyrtc-accept-stream2 caller-easyrtc-id stream ])
-  (assoc db :current-call caller-easyrtc-id)
+  (re-frame/dispatch [:modal {:show? true
+                              :child [modal/videos]
+                              :size :small}])  
+  (assoc db  :current-call caller-easyrtc-id)
   ))
 
 (re-frame/reg-event-db

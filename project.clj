@@ -28,6 +28,7 @@
                  [com.stuartsierra/component "0.3.2"]
                  [org.clojars.frozenlock/reagent-modals "0.2.3"]
                  [cljsjs/auth0-lock "11.5.2-0"]
+;                 [com.datomic/datomic-free "0.9.5697"]
                 ]
 
   :repl-options { :timeout 1200000 }
@@ -65,7 +66,16 @@
                    [lein-figwheel "0.5.8"]
                    [lein-doo "0.1.7"]]
     :source-paths ["src/cljs" "dev"]
-    }}
+    }
+   :uberjar
+   {:dependencies [
+                   [org.clojure/tools.namespace "0.2.11"]
+                   ]
+    :plugins      [
+                   [lein-doo "0.1.7"]]
+    :source-paths ["src/cljs"]
+    }
+  }
 
   :cljsbuild
   {:builds
@@ -100,6 +110,22 @@
                     :output-dir           "resources/public/js/compiled/out-min"
                     :asset-path           "js/compiled/out-min"
                     :source-map-timestamp true
+                    }}
+  {:id           "uberjar"
+   :jar           true
+     :source-paths ["src/cljs"]
+     :compiler     {:main                 viime.core
+                    :foreign-libs         [{:file "src/easyrtc/socket.io.js"
+                                            :provides ["socket.io.js"]},
+                                           {:file "src/easyrtc/easyrtc.js"
+                                            :provides ["easyrtc.js"]
+                                            :requires ["socket.io.js"]}
+                                          ]
+                    :output-to            "resources/public/js/compiled/app.js"
+                    :output-dir           "resources/public/js/compiled/out-uberjar"
+                    :asset-path           "js/compiled/out-uberjar"
+                    :source-map-timestamp true
+                    :optimizations   :advanced
                     }}
    #_{:id           "min"
      :source-paths ["src/cljs"]
