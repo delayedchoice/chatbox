@@ -1,7 +1,7 @@
 (defproject viime "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.229"]
-                  ;[reagent "0.6.0"]
+;                  [reagent "0.6.0"]
                  [liberator "0.14.1"]
                  [com.andrewmcveigh/cljs-time "0.4.0"]
                  [cljs-ajax "0.5.8"]
@@ -95,6 +95,7 @@
                     :source-map-timestamp true
                     :preloads             [devtools.preload]
                     :external-config      {:devtools/config {:features-to-install :all}}
+                    :optimizations   :none
                     }}
 
   {:id           "min"

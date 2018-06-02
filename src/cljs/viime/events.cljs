@@ -1,6 +1,8 @@
 (ns viime.events
     (:require [re-frame.core :as re-frame]
               [viime.db :as db]
+              [reagent.core :as reagent]
+              [reagent.core :as reagent]
               [viime.modal :as modal]
               [easyrtc.js]))
 
@@ -97,11 +99,11 @@
 (re-frame/reg-event-db
  :easyrtc-accept-stream
  (fn  [db [_ caller-easyrtc-id stream]]
-#_  (re-frame/dispatch [:easyrtc-accept-stream2 caller-easyrtc-id stream ])
+#_  (re-frame/dispatch [:easyrtc-accept-stream2])
 #_  (re-frame/dispatch [:modal {:show? true
                               :child [modal/videos]
                               :size :small}])  
-(modal/create-modal caller-easyrtc-id stream)
+(modal/create-modal)
   (-> 
     (assoc db  :current-call caller-easyrtc-id)
     (assoc :stream stream))
@@ -120,14 +122,15 @@
         caller-video (.getElementById js/document "caller") ]
 (prn "TESTING ACCEPT STREAM2")
     (.setVideoObjectSrc js/easyrtc self-video (.getLocalStream js/easyrtc))
-    (.setVideoObjectSrc js/easyrtc caller-video stream) )
+    (.setVideoObjectSrc js/easyrtc caller-video (db :stream)) )
   db))
 
 (re-frame/reg-event-db
  :easyrtc-stream-closed
  (fn  [db [_ caller-easyrtc-id]]
-  (let [video (.getElementById js/document "caller") ]
-    (.setVideoObjectSrc js/easyrtc video "") )
+  (let [elem (.getElementById js/document "modal") ]
+    (reagent/unmount-component-at-node elem) 
+    #_(.setVideoObjectSrc js/easyrtc video "") )
   db))
 
 (re-frame/reg-event-db
@@ -144,17 +147,15 @@
  :initialize-easyrtc
  (fn  [db [_ user]]
    (let [_ (prn "cred: " (get-in user [:auth-result :accessToken]))]
-     (.setUsername js/easyrtc (get-in user [:profile :email]))
-     (.setCredential js/easyrtc (clj->js {:token (get-in user [:auth-result :accessToken])}))
-     (.setStreamAcceptor js/easyrtc #(re-frame/dispatch [:easyrtc-accept-stream %1 %2]))
-     (.setOnStreamClosed js/easyrtc #(re-frame/dispatch [:easyrtc-stream-closed %1]))
-     (.setVideoDims js/easyrtc 640 480)
-     (.setRoomOccupantListener js/easyrtc #(re-frame/dispatch [:update-easyrtc-info %1 %2 %3]) )
-     (if ^boolean js/goog.DEBUG 
-       (.connect js/easyrtc "default"
-                 #(re-frame/dispatch [:easyrtc-connect-success %1])
-                 #(re-frame/dispatch [:easyrtc-connect-failure %1]))
-       (.initMediaSource js/easyrtc #(re-frame/dispatch [:easyrtc-registrtation-success %1 %2 %3]) 
-                         #(re-frame/dispatch [:easyrtc-connect-failure])) )
+     (if ^boolean (not js/goog.DEBUG) 
+       (do (.setUsername js/easyrtc (get-in user [:profile :email]))
+           (.setCredential js/easyrtc (clj->js {:token (get-in user [:auth-result :accessToken])}))
+           (.setStreamAcceptor js/easyrtc #(re-frame/dispatch [:easyrtc-accept-stream %1 %2]))
+           (.setOnStreamClosed js/easyrtc #(re-frame/dispatch [:easyrtc-stream-closed %1]))
+           (.setVideoDims js/easyrtc 640 480)
+           (.setRoomOccupantListener js/easyrtc #(re-frame/dispatch [:update-easyrtc-info %1 %2 %3]) )
+           (.initMediaSource js/easyrtc #(re-frame/dispatch [:easyrtc-registrtation-success %1 %2 %3]) 
+                          #(re-frame/dispatch [:easyrtc-connect-failure])))
+      (modal/create-modal))
     (prn "initialized easyrtc")
 		db)))
