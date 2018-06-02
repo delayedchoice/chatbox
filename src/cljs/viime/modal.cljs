@@ -33,7 +33,33 @@
 (defn- close-modal []
   (dispatch [:modal {:show? false :child nil}]))
 
-
+(defn create-modal [caller-easyrtc-id stream]
+    (reagent/create-class                 ;; <-- expects a map of functions 
+                         {:component-did-mount               ;; the name of a lifecycle function
+                          #(dispatch [:easyrtc-accept-stream2 caller-easyrtc-id stream ])
+                          :display-name  "videos"  ;; for more helpful warnings & errors
+                          :reagent-render        ;; Note:  is not :render
+                           (fn []
+                              [:div {:class "modal-wrapper"}
+                               [:div {:class "modal-backdrop"
+                                      :on-click (fn [event]
+                                                  (do
+                                                    #_(dispatch [:modal {:show? (not show?)
+                                                                       :child nil
+                                                                       :size :default}])
+                                                    (.preventDefault event)
+                                                    (.stopPropagation event)))}]
+                               [:div {:class "modal-child"
+                                      :style {:width "50%" #_(case :small
+                                                       :extra-small "15%"
+                                                       :small "30%"
+                                                       :large "70%"
+                                                       :extra-large "85%"
+                                                       "50%")}} 
+                                              [:div.video-container {:id "videos"}
+                                                         [:video.selfVideo.easyrtcMirror {:autoPlay "autoplay" :id "self" :muted true }]
+                                                         [:video.callerVideo.callerDiv  {:autoPlay "autoplay" :id "caller"}]]]]                          ) })
+  )
 (defn videos []
   (let [caller-easyrtc-id (subscribe [:current-call])
         stream (subscribe :stream) ]

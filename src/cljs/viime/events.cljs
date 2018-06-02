@@ -97,10 +97,11 @@
 (re-frame/reg-event-db
  :easyrtc-accept-stream
  (fn  [db [_ caller-easyrtc-id stream]]
-  (re-frame/dispatch [:easyrtc-accept-stream2 caller-easyrtc-id stream ])
-  (re-frame/dispatch [:modal {:show? true
+#_  (re-frame/dispatch [:easyrtc-accept-stream2 caller-easyrtc-id stream ])
+#_  (re-frame/dispatch [:modal {:show? true
                               :child [modal/videos]
                               :size :small}])  
+(modal/create-modal caller-easyrtc-id stream)
   (-> 
     (assoc db  :current-call caller-easyrtc-id)
     (assoc :stream stream))
