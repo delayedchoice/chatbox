@@ -101,7 +101,9 @@
   (re-frame/dispatch [:modal {:show? true
                               :child [modal/videos]
                               :size :small}])  
-  (assoc db  :current-call caller-easyrtc-id)
+  (-> 
+    (assoc db  :current-call caller-easyrtc-id)
+    (assoc :stream stream))
   ))
 
 (re-frame/reg-event-db
