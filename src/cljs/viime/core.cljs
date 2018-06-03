@@ -4,7 +4,6 @@
               [viime.events]
               [viime.subs]
               [viime.auth0]
-;              [viime.modal]
               [viime.routes :as routes]
               [viime.views :as views]
               [viime.config :as config]))

@@ -11,10 +11,6 @@
   (:import [goog History]
            [goog.history EventType]))
 
-(defn videos []
-  (fn []
-     [:div {:id "modal-div" }]))
-
 (defn nav-bar []
  [:nav.navbar.navbar-custom
   [:div.container-fluid
@@ -62,12 +58,10 @@
 (defn home-panel []
   (let [pid (rf/subscribe [:peerjs-id])
         user (rf/subscribe [:logged-in-as])]
-       [:title "SSi"]
+       [:title "Video-Chat"]
       [:div [nav-bar]
             [reagent-modals/modal-window]
-            [availiable-users]
-            ]))
+            [availiable-users]]))
 
 (defn main-panel []
-  (fn []
-  [home-panel]))
+  (fn [] [home-panel]))

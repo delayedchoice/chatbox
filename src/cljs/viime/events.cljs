@@ -4,19 +4,12 @@
               [reagent-modals.modals :as reagent-modals]
               [reagent.core :as reagent]
               [viime.modal :as modal]
-              [easyrtc.js]))
+	          [easyrtc.js]))
 
 (re-frame/reg-event-db
  :initialize-db
  (fn  [_ _]
    db/default-db))
-
-(re-frame/reg-event-db
- :do-login
- (fn  [db [_ _]]
-   (prn "DO LOGIN")
-  (re-frame/dispatch [:initialize-easyrtc (db :user-name)])
-  (assoc db :show-loader true)))
 
 
 (re-frame/reg-event-db
@@ -41,27 +34,16 @@
         (assoc :primary? primary?)))))
 
 (re-frame/reg-event-db
- :login-success
- (fn  [db [_ easyrtcid]]
-   (prn "LoginSuccess: " easyrtcid)
-   (-> db
-       (assoc :show-loader false)
-       (assoc :users {})
-       (assoc :easyrtcid (.cleanId js/easyrtc easyrtcid))
-       )))
-
-(re-frame/reg-event-db
  :easyrtc-call-success
  (fn  [db [_ easyrtcid]]
    (prn "CallSuccess: " easyrtcid)
-  (assoc db :show-loader false) ))
+   ))
 
 (re-frame/reg-event-db
  :easyrtc-connect-success
  (fn  [db [_ easyrtcid]]
    (prn "ConnectSuccess: " easyrtcid)
    (-> db
-        (assoc :show-loader false)
         (assoc :users {})
         (assoc :easyrtcid (.cleanId js/easyrtc easyrtcid))
        )))
@@ -71,17 +53,9 @@
  (fn  [db [args]]
    (prn "ConnectFailure: " args)
    (-> db
-      (assoc :show-loader false)
       (assoc :users {})
       (assoc :users {})
        )))
-
-(re-frame/reg-event-db
- :login-failure
- (fn  [db [_ error-code message]]
-  (prn "LoginFailure:  " error-code  ":" message)
-   (.showError js/easyrtc error-code message)
-   (assoc db :show-loader false)))
 
 (re-frame/reg-event-db
  :easyrtc-accept-stream
