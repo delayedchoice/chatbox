@@ -11,19 +11,9 @@
   (:import [goog History]
            [goog.history EventType]))
 
-;(defn my-awesome-modal-fn []
-; [:button
-;  {:title "Click to show modal!"
-;   :on-click #(rf/dispatch [:modal {:show? true
-;                                 :child [modal/hello]
-;                                 :size :small}])} "Show me the modal!"])
-;(defn videos []
-;  (fn []
-;    (let [current-call-id (rf/subscribe [:current-call])
-;          _ (prn  "CurrentCaller: " @current-call-id) ]
-;     [:div.video-container {:id "videos" #_(if (nil? @current-call-id) "hidden" "")}
-;      [:video.selfVideo.easyrtcMirror {:autoPlay "autoplay" :id "self" :muted true }]
-;      [:video.callerVideo.callerDiv  {:autoPlay "autoplay" :id "caller"}]])))
+(defn videos []
+  (fn []
+     [:div {:id "modal-div" }]))
 
 (defn nav-bar []
  [:nav.navbar.navbar-custom
@@ -69,19 +59,13 @@
        [:br]
       ]) ))
 
-
-
-
 (defn home-panel []
   (let [pid (rf/subscribe [:peerjs-id])
         user (rf/subscribe [:logged-in-as])]
-      [:title "SSi"]
+       [:title "SSi"]
       [:div [nav-bar]
-            ;[reagent-modals/modal-window]
-            [modal/modal]
+            [reagent-modals/modal-window]
             [availiable-users]
-;            [my-awesome-modal-fn]
-  ;          [videos]
             ]))
 
 (defn main-panel []

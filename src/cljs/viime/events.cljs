@@ -1,28 +1,15 @@
 (ns viime.events
     (:require [re-frame.core :as re-frame]
               [viime.db :as db]
-              [reagent.core :as reagent]
+              [reagent-modals.modals :as reagent-modals]
               [reagent.core :as reagent]
               [viime.modal :as modal]
               [easyrtc.js]))
 
 (re-frame/reg-event-db
- :modal
- (fn [db [_ data]]
-   (assoc-in db [:modal] data)))
-
-(re-frame/reg-event-db
  :initialize-db
  (fn  [_ _]
    db/default-db))
-
-(re-frame/reg-event-db
- :login
- (fn  [db [_ user-name password]]
-  (-> db
-      (assoc :user-name user-name)
-      (assoc :password password)
-      )))
 
 (re-frame/reg-event-db
  :do-login
@@ -99,28 +86,18 @@
 (re-frame/reg-event-db
  :easyrtc-accept-stream
  (fn  [db [_ caller-easyrtc-id stream]]
-#_  (re-frame/dispatch [:easyrtc-accept-stream2])
-#_  (re-frame/dispatch [:modal {:show? true
-                              :child [modal/videos]
-                              :size :small}])  
-(modal/create-modal)
-  (-> 
+  #_(modal/create-modal)
+  (reagent-modals/modal! [:div [(modal/create-modal)]])
+   (-> 
     (assoc db  :current-call caller-easyrtc-id)
-    (assoc :stream stream))
-  ))
-
-(re-frame/reg-event-db
- :set-loader-visible
- (fn  [db [_ show-loader?]]
-  (assoc db :show-loader show-loader?)
-  ))
+    (assoc :stream stream))))
 
 (re-frame/reg-event-db
  :easyrtc-accept-stream2
  (fn  [db [_ caller-easyrtc-id stream]]
   (let [self-video (.getElementById js/document "self")
         caller-video (.getElementById js/document "caller") ]
-(prn "TESTING ACCEPT STREAM2")
+    (prn "ACCEPT STREAM2")
     (.setVideoObjectSrc js/easyrtc self-video (.getLocalStream js/easyrtc))
     (.setVideoObjectSrc js/easyrtc caller-video (db :stream)) )
   db))
@@ -136,11 +113,9 @@
 (re-frame/reg-event-db
  :easyrtc-registrtation-success
  (fn  [db [_]]
-  (let [self-video (.getElementById js/document "self")
-        _ (prn "Connecting: ") ]
-    (.connect js/easyrtc "default"
-                        #(re-frame/dispatch [:easyrtc-connect-success %1])
-                        #(re-frame/dispatch [:easyrtc-connect-failure %1])) )
+    (prn "Connecting: ") 
+    (.connect js/easyrtc "default" #(re-frame/dispatch [:easyrtc-connect-success %1])
+                        ``         #(re-frame/dispatch [:easyrtc-connect-failure %1])) 
   db))
 
 (re-frame/reg-event-db
@@ -156,6 +131,6 @@
            (.setRoomOccupantListener js/easyrtc #(re-frame/dispatch [:update-easyrtc-info %1 %2 %3]) )
            (.initMediaSource js/easyrtc #(re-frame/dispatch [:easyrtc-registrtation-success %1 %2 %3]) 
                           #(re-frame/dispatch [:easyrtc-connect-failure])))
-      (modal/create-modal))
-    (prn "initialized easyrtc")
-		db)))
+    (reagent-modals/modal! (modal/create-modal)   {:size :lg  :shown #(re-frame/dispatch [:easyrtc-accept-stream2])}) )
+      (prn "initialized easyrtc")
+	db)))
