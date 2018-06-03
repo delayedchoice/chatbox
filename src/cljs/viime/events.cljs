@@ -73,7 +73,14 @@
         caller-video (.getElementById js/document "caller") ]
     (prn "Accept Stream2")
     (.setVideoObjectSrc js/easyrtc self-video (.getLocalStream js/easyrtc))
-    (.setVideoObjectSrc js/easyrtc caller-video (db :stream)) )
+    (.setVideoObjectSrc js/easyrtc caller-video (db :stream))
+    (let [
+          w (.-clientWidth caller-video)
+          h (.-clientHeight caller-video)
+_ (prn "Dim: w:" w "h:" h )]
+     (set! (.-top (.-style self-video)) (str (- h 100) "px")) 
+     (set! (.-left (.-style self-video))(str (- w 150) "px") )) )
+    
   db))
 
 (re-frame/reg-event-db
