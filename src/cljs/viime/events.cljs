@@ -15,7 +15,7 @@
 (re-frame/reg-event-db
  :perform-call
  (fn  [db [_ user]]
-   (let [_ (prn "PerformCall: ")]
+   (let [_ (prn "Performing Call: " user)]
     (.hangupAll js/easyrtc)
     (.call js/easyrtc user #(re-frame/dispatch [:easyrtc-call-success %1])
                            #(re-frame/dispatch [:easyrtc-connect-failure %1]) ))))
@@ -25,7 +25,7 @@
  (fn  [db [_ room-name data primary?]]
    (let [other-client-div (.getElementById js/document "otherClients")
          remote-users (js->clj data)
-         _ (prn "DataUpdate: " remote-users )
+         _ (prn "Data Update: " remote-users )
          users remote-users]
      (-> db
         (assoc :users users)
@@ -36,13 +36,13 @@
 (re-frame/reg-event-db
  :easyrtc-call-success
  (fn  [db [_ easyrtcid]]
-   (prn "CallSuccess: " easyrtcid)
+   (prn "Call Success: " easyrtcid)
    ))
 
 (re-frame/reg-event-db
  :easyrtc-connect-success
  (fn  [db [_ easyrtcid]]
-   (prn "ConnectSuccess: " easyrtcid)
+   (prn "Connect Success: " easyrtcid)
    (-> db
         (assoc :users {})
         (assoc :easyrtcid (.cleanId js/easyrtc easyrtcid))
@@ -51,7 +51,7 @@
 (re-frame/reg-event-db
  :easyrtc-connect-failure
  (fn  [db [args]]
-   (prn "ConnectFailure: " args)
+   (prn "Connect Failure: " args)
    (-> db
       (assoc :users {})
       (assoc :users {})
@@ -60,9 +60,9 @@
 (re-frame/reg-event-db
  :easyrtc-accept-stream
  (fn  [db [_ caller-easyrtc-id stream]]
-  #_(modal/create-modal)
+  (prn "Accept Stream2")
   (reagent-modals/modal! [:div [(modal/create-modal)]])
-   (-> 
+  (-> 
     (assoc db  :current-call caller-easyrtc-id)
     (assoc :stream stream))))
 
@@ -71,7 +71,7 @@
  (fn  [db [_ caller-easyrtc-id stream]]
   (let [self-video (.getElementById js/document "self")
         caller-video (.getElementById js/document "caller") ]
-    (prn "ACCEPT STREAM2")
+    (prn "Accept Stream2")
     (.setVideoObjectSrc js/easyrtc self-video (.getLocalStream js/easyrtc))
     (.setVideoObjectSrc js/easyrtc caller-video (db :stream)) )
   db))
@@ -80,14 +80,13 @@
  :easyrtc-stream-closed
  (fn  [db [_ caller-easyrtc-id]]
   (let [elem (.getElementById js/document "modal") ]
-    (reagent/unmount-component-at-node elem) 
-    #_(.setVideoObjectSrc js/easyrtc video "") )
-  db))
+    (prn "Stream Closed")
+  db)))
 
 (re-frame/reg-event-db
  :easyrtc-registrtation-success
  (fn  [db [_]]
-    (prn "Connecting: ") 
+    (prn "Registered with EasyRTC") 
     (.connect js/easyrtc "default" #(re-frame/dispatch [:easyrtc-connect-success %1])
                         ``         #(re-frame/dispatch [:easyrtc-connect-failure %1])) 
   db))
@@ -96,6 +95,7 @@
  :initialize-easyrtc
  (fn  [db [_ user]]
    (let [_ (prn "cred: " (get-in user [:auth-result :accessToken]))]
+     (prn "Initializing EasyRTC")
      (if ^boolean (not js/goog.DEBUG) 
        (do (.setUsername js/easyrtc (get-in user [:profile :email]))
            (.setCredential js/easyrtc (clj->js {:token (get-in user [:auth-result :accessToken])}))
@@ -106,5 +106,4 @@
            (.initMediaSource js/easyrtc #(re-frame/dispatch [:easyrtc-registrtation-success %1 %2 %3]) 
                           #(re-frame/dispatch [:easyrtc-connect-failure])))
     (reagent-modals/modal! (modal/create-modal)   {:size :lg  :shown #(re-frame/dispatch [:easyrtc-accept-stream2])}) )
-      (prn "initialized easyrtc")
 	db)))
