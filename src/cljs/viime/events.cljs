@@ -60,8 +60,9 @@
 (re-frame/reg-event-db
  :easyrtc-accept-stream
  (fn  [db [_ caller-easyrtc-id stream]]
-  (prn "Accept Stream2")
-  (reagent-modals/modal! [:div [(modal/create-modal)]])
+  (prn "Accept Stream1")
+  ;(reagent-modals/modal! [:div [(modal/create-modal)]])
+  (reagent-modals/modal! (modal/create-modal)   {:size :lg  :shown #(re-frame/dispatch [:easyrtc-accept-stream2])}) 
   (-> 
     (assoc db  :current-call caller-easyrtc-id)
     (assoc :stream stream))))
@@ -103,7 +104,7 @@ _ (prn "Dim: w:" w "h:" h )]
  (fn  [db [_ user]]
    (let [_ (prn "cred: " (get-in user [:auth-result :accessToken]))]
      (prn "Initializing EasyRTC")
-     (if ^boolean (not js/goog.DEBUG) 
+     ;(if ^boolean (not js/goog.DEBUG) 
        (do (.setUsername js/easyrtc (get-in user [:profile :email]))
            (.setCredential js/easyrtc (clj->js {:token (get-in user [:auth-result :accessToken])}))
            (.setStreamAcceptor js/easyrtc #(re-frame/dispatch [:easyrtc-accept-stream %1 %2]))
@@ -112,5 +113,5 @@ _ (prn "Dim: w:" w "h:" h )]
            (.setRoomOccupantListener js/easyrtc #(re-frame/dispatch [:update-easyrtc-info %1 %2 %3]) )
            (.initMediaSource js/easyrtc #(re-frame/dispatch [:easyrtc-registrtation-success %1 %2 %3]) 
                           #(re-frame/dispatch [:easyrtc-connect-failure])))
-    (reagent-modals/modal! (modal/create-modal)   {:size :lg  :shown #(re-frame/dispatch [:easyrtc-accept-stream2])}) )
+    ;(reagent-modals/modal! (modal/create-modal)   {:size :lg  :shown #(re-frame/dispatch [:easyrtc-accept-stream2])}) )
 	db)))
