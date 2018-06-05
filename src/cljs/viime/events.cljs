@@ -61,7 +61,6 @@
  :easyrtc-accept-stream
  (fn  [db [_ caller-easyrtc-id stream]]
   (prn "Accept Stream1")
-  ;(reagent-modals/modal! [:div [(modal/create-modal)]])
   (reagent-modals/modal! (modal/create-modal)   {:size :lg  :shown #(re-frame/dispatch [:easyrtc-accept-stream2])}) 
   (-> 
     (assoc db  :current-call caller-easyrtc-id)
@@ -69,7 +68,7 @@
 
 (re-frame/reg-event-db
  :easyrtc-accept-stream2
- (fn  [db [_ caller-easyrtc-id stream]]
+ (fn  [db _]
   (let [self-video (.getElementById js/document "self")
         caller-video (.getElementById js/document "caller") ]
     (prn "Accept Stream2")
