@@ -86,7 +86,7 @@
 (re-frame/reg-event-db
  :easyrtc-accept-stream
  (fn  [db [_ caller-easyrtc-id stream]]
-   (reagent-modals/modal! (modal/create-modal)   {:size :lg  :shown #(re-frame/dispatch [:easyrtc-accept-stream2])}) )
+   (reagent-modals/modal! (modal/create-modal)   {:size :lg  :shown #(re-frame/dispatch [:easyrtc-accept-stream2])}) 
    (-> 
     (assoc db  :current-call caller-easyrtc-id)
     (assoc :stream stream))))
