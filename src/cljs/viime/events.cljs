@@ -86,8 +86,7 @@
 (re-frame/reg-event-db
  :easyrtc-accept-stream
  (fn  [db [_ caller-easyrtc-id stream]]
-  #_(modal/create-modal)
-  (reagent-modals/modal! [:div [(modal/create-modal)]])
+   (reagent-modals/modal! (modal/create-modal)   {:size :lg  :shown #(re-frame/dispatch [:easyrtc-accept-stream2])}) )
    (-> 
     (assoc db  :current-call caller-easyrtc-id)
     (assoc :stream stream))))
@@ -99,8 +98,13 @@
         caller-video (.getElementById js/document "caller") ]
     (prn "ACCEPT STREAM2")
     (.setVideoObjectSrc js/easyrtc self-video (.getLocalStream js/easyrtc))
-    (.setVideoObjectSrc js/easyrtc caller-video (db :stream)) )
-  db))
+    (.setVideoObjectSrc js/easyrtc caller-video (db :stream)) 
+    (let [w (.-clientWidth caller-video)
+          h (.-clientHeight caller-video) 
+          _ (prn "Dim: w:" w "h:" h )]
+          (set! (.-top (.-style self-video)) (str (- h 100) "px"))
+          (set! (.-left (.-style self-video))(str (- w 150) "px") )))
+    db))
 
 (re-frame/reg-event-db
  :easyrtc-stream-closed
@@ -122,7 +126,7 @@
  :initialize-easyrtc
  (fn  [db [_ user]]
    (let [_ (prn "cred: " (get-in user [:auth-result :accessToken]))]
-     (if ^boolean (not js/goog.DEBUG) 
+     ;(if ^boolean (not js/goog.DEBUG) 
        (do (.setUsername js/easyrtc (get-in user [:profile :email]))
            (.setCredential js/easyrtc (clj->js {:token (get-in user [:auth-result :accessToken])}))
            (.setStreamAcceptor js/easyrtc #(re-frame/dispatch [:easyrtc-accept-stream %1 %2]))
@@ -131,6 +135,6 @@
            (.setRoomOccupantListener js/easyrtc #(re-frame/dispatch [:update-easyrtc-info %1 %2 %3]) )
            (.initMediaSource js/easyrtc #(re-frame/dispatch [:easyrtc-registrtation-success %1 %2 %3]) 
                           #(re-frame/dispatch [:easyrtc-connect-failure])))
-    (reagent-modals/modal! (modal/create-modal)   {:size :lg  :shown #(re-frame/dispatch [:easyrtc-accept-stream2])}) )
+    ;(reagent-modals/modal! (modal/create-modal)   {:size :lg  :shown #(re-frame/dispatch [:easyrtc-accept-stream2])}) )
       (prn "initialized easyrtc")
 	db)))

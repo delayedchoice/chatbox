@@ -128,6 +128,7 @@
                     :source-map-timestamp true
                     :externs             [ "src/easyrtc/easyrtc.js" ] 
                     :optimizations   :advanced
+                    :closure-defines {"goog.DEBUG" false}
                     }}
    #_{:id           "min"
      :source-paths ["src/cljs"]
@@ -163,4 +164,4 @@
   :main viime.system
   :aot [clojure.tools.logging.impl viime.system]
   :uberjar-name "viime.jar"
-  :prep-tasks [["cljsbuild" "once" "uberjar"] "compile"])
+  :prep-tasks [["cljsbuild" "once" "uberjar"] ["cljsbuild" "once" "uberjar"] "compile"])
