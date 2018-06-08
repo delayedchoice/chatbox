@@ -28,7 +28,7 @@
          _ (prn "Data Update: " remote-users )
          ]
      (-> db
-        (assoc :remote-data (if (> (count remote-users) 0) remote-users (:remote-data db)))
+        (assoc :remote-data (if (nil? remote-users) (:remote-data db) remote-users  ))
         (assoc :room-name room-name)
         (assoc :primary? primary?)))))
 
