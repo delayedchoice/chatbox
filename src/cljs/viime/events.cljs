@@ -61,7 +61,7 @@
  :easyrtc-accept-stream
  (fn  [db [_ caller-easyrtc-id stream]]
   (prn "Accept Stream1")
-  (reagent-modals/modal! (modal/create-modal)   {:size :lg  :shown #(re-frame/dispatch [:easyrtc-accept-stream2])}) 
+  (reagent-modals/modal! (modal/create-modal)   {:size :lg :hidden #(re-frame/dispatch [:hangup]) :shown #(re-frame/dispatch [:easyrtc-accept-stream2])}) 
   (-> 
     (assoc db  :current-call caller-easyrtc-id)
     (assoc :stream stream))))
@@ -87,9 +87,16 @@ _ (prn "Dim: w:" w "h:" h )]
 (re-frame/reg-event-db
  :easyrtc-stream-closed
  (fn  [db [_ caller-easyrtc-id]]
-  (let [elem (.getElementById js/document "modal") ]
-    (prn "Stream Closed")
-  db)))
+  (reagent-modals/close-modal! )
+  (prn "Stream Closed -remote")
+  db))
+
+(re-frame/reg-event-db
+ :hangup
+ (fn  [db [_ caller-easyrtc-id]]
+ (prn "Window Closed - hangup")
+ (.hangupAll js/easyrtc caller-video (db :stream) ) 
+ db)) 
 
 (re-frame/reg-event-db
  :easyrtc-registrtation-success
