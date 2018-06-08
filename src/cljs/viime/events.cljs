@@ -37,7 +37,7 @@
  :easyrtc-call-success
  (fn  [db [_ easyrtcid]]
    (prn "Call Success: " easyrtcid)
-   ))
+   db))
 
 (re-frame/reg-event-db
  :easyrtc-connect-success
@@ -68,9 +68,10 @@
 
 (re-frame/reg-event-db
  :easyrtc-accept-stream2
- (fn  [db _]
+ (fn  [db [args]]
   (let [self-video (.getElementById js/document "self")
-        caller-video (.getElementById js/document "caller") ]
+        caller-video (.getElementById js/document "caller")
+       _ (prn "stuff:" self-video ":" caller-video ":" db) ]
     (prn "Accept Stream2")
     (.setVideoObjectSrc js/easyrtc self-video (.getLocalStream js/easyrtc))
     (.setVideoObjectSrc js/easyrtc caller-video (db :stream))
