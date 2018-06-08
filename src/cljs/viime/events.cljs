@@ -16,7 +16,6 @@
  :perform-call
  (fn  [db [_ user]]
    (let [_ (prn "Performing Call: " user)]
-    (.hangupAll js/easyrtc)
     (.call js/easyrtc user #(re-frame/dispatch [:easyrtc-call-success %1])
                            #(re-frame/dispatch [:easyrtc-connect-failure %1]) ))))
 
@@ -90,8 +89,9 @@ _ (prn "Dim: w:" w "h:" h )]
 (re-frame/reg-event-db
  :hangup
  (fn  [db [_ caller-easyrtc-id]]
- (prn "Window Closed - hangup")
- (.hangupAll js/easyrtc caller-video (db :stream) ) 
+  (prn "Window Closed - hangup")
+  (let [caller-id (db :current-call) ]
+   (.hangup js/easyrtc caller-id)) 
  db)) 
 
 (re-frame/reg-event-db
