@@ -26,10 +26,9 @@
    (let [other-client-div (.getElementById js/document "otherClients")
          remote-users (js->clj data)
          _ (prn "Data Update: " remote-users )
-         users remote-users]
+         ]
      (-> db
-        (assoc :users users)
-        (assoc :remote-data remote-users)
+        (assoc :remote-data (if (> (count remote-users) 0) remote-users (:remote-data db)))
         (assoc :room-name room-name)
         (assoc :primary? primary?)))))
 
@@ -44,7 +43,6 @@
  (fn  [db [_ easyrtcid]]
    (prn "Connect Success: " easyrtcid)
    (-> db
-        (assoc :users {})
         (assoc :easyrtcid (.cleanId js/easyrtc easyrtcid))
        )))
 
@@ -53,8 +51,6 @@
  (fn  [db [args]]
    (prn "Connect Failure: " args)
    (-> db
-      (assoc :users {})
-      (assoc :users {})
        )))
 
 (re-frame/reg-event-db

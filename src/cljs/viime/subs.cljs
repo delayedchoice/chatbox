@@ -29,11 +29,6 @@
     (:stream db)))
 
 (re-frame/reg-sub
- :users
- (fn [db]
-   (:users db)))
-
-(re-frame/reg-sub
  :user
  (fn [db]
    (:user db)))
